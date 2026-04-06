@@ -386,7 +386,7 @@ const TOURNEY = {
 const CFG={ADMIN_PWD:'HOLT2026!',ENTRY_FEE:25,SPLITS:[0.70,0.20,0.10]};
 const SB_URL='https://atkdzfhoadnoyhbyxwwp.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0a2R6ZmhvYWRub3loYnl4d3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MDIsImV4cCI6MjA5MDMxMDUwMn0.jbMKkE1aurjalbLSkIvP2t4QBdGHrJCT2eBmLyR4xVk';
-const ESPN_URL='https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga';
+const ESPN_URL='https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&event=401811956';
 const PROXY='https://api.allorigins.win/get?url=';
 
 // ── 2026 MASTERS HARDCODED FIELD (fallback before ESPN activates) ────
@@ -594,10 +594,9 @@ function buildSearchWidget(containerId, pickIndex){
 }
 
 function getPlayerList(){
-  // Priority: 1) Live ESPN data, 2) Hardcoded field, 3) Demo players
-  if(!S.demoMode && S.pgaPlayers.length) return S.pgaPlayers.map(p=>p.displayName).sort();
-  if(!S.demoMode && MASTERS_2026_FIELD.length) return MASTERS_2026_FIELD;
-  return DEMO_PLAYERS.map(p=>p.displayName).sort();
+  // Always use hardcoded Masters field until ESPN Masters data is live
+  if(!S.demoMode && S.pgaPlayers.length >= 80) return S.pgaPlayers.map(p=>p.displayName).sort();
+  return MASTERS_2026_FIELD;
 }
 
 function filterDropdown(id){
@@ -737,24 +736,31 @@ async function renderStandings(){
 
 // ── RENDER LEADERBOARD ───────────────────────────────────────────────
 function renderLeaderboard(){
-  const players=activePlayers();
-  if(!players.length){document.getElementById('leaderboardContent').innerHTML=`<div class="alert alert-warning" style="margin:0">⚠️ Live data unavailable. Click Refresh to retry.</div>`;return;}
-  const tName=S.demoMode?DEMO_META.name:S.tName;
-  const rnd=S.demoMode?'Final Results':(S.round>0?`Round ${S.round}`:'Pre-Tournament');
-  const upd=S.demoMode?'Apr 13, 2025 — Final':(S.lastUpdated?.toLocaleTimeString()||'');
-  const winner=players.find(p=>p.madeCut);
-  const isFinal=S.demoMode||(S.tStatus?.includes('FINAL'));
-  let wb='';
-  if(winner&&isFinal){wb=`<div class="winner-banner"><div class="winner-trophy">🏆</div><div class="winner-info"><div class="title">Champion</div><div class="name">${winner.displayName}</div><div class="score">${fmtPar(winner.score)} — Final</div></div></div>`;}
-  let pos=1,dpos=1,cutR='',madeR='';
-  players.forEach((p,i)=>{
-    if(!p.madeCut){cutR+=`<tr class="lb-cut"><td class="lb-pos">MC</td><td class="lb-name">${p.displayName}</td><td class="lb-even">${fmtPar(p.score)}</td><td class="lb-detail">Missed Cut</td></tr>`;return;}
-    const tied=i>0&&players[i-1].madeCut&&players[i-1].score===p.score;
-    if(!tied)dpos=pos;const pd=tied?'T'+dpos:String(dpos);pos++;
-    const sc=p.score<0?'lb-under':p.score>0?'lb-over':'lb-even';
-    madeR+=`<tr><td class="lb-pos">${pd}</td><td class="lb-name">${p.displayName}</td><td class="${sc}">${fmtPar(p.score)}</td><td class="lb-detail">${p.detail||''}</td></tr>`;
-  });
-  document.getElementById('leaderboardContent').innerHTML=`${wb}<div class="card"><div class="card-header"><h3>${tName}</h3><span class="meta">${rnd} · ${upd}</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>Pos</th><th>Player</th><th>Score</th><th>Status</th></tr></thead><tbody>${madeR}${cutR?`<tr><td colspan="4" style="padding:.4rem 1.25rem;background:var(--gray-50);font-size:.68rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em">Missed Cut</td></tr>${cutR}`:''}</tbody></table></div></div>`;
+  const el=document.getElementById('leaderboardContent');
+
+  // If live ESPN Masters data is available (80+ players = full Masters field)
+  if(!S.demoMode && S.pgaPlayers.length>=80){
+    const upd=S.lastUpdated?.toLocaleTimeString()||'';
+    const rnd=S.round>0?`Round ${S.round}`:'Pre-Tournament';
+    let madeR='',cutR='';
+    // Sort alphabetically
+    const sorted=[...S.pgaPlayers].sort((a,b)=>a.displayName.localeCompare(b.displayName));
+    sorted.forEach(p=>{
+      const sc=p.score<0?'lb-under':p.score>0?'lb-over':'lb-even';
+      if(!p.madeCut){
+        cutR+=`<tr class="lb-cut"><td class="lb-pos">MC</td><td class="lb-name">${p.displayName}</td><td class="${sc}">${fmtPar(p.score)}</td><td class="lb-detail">Missed Cut</td></tr>`;
+      } else {
+        madeR+=`<tr><td class="lb-pos">—</td><td class="lb-name">${p.displayName}</td><td class="${sc}">${fmtPar(p.score)}</td><td class="lb-detail">${p.detail||''}</td></tr>`;
+      }
+    });
+    el.innerHTML=`<div class="card"><div class="card-header"><h3>2026 Masters — Player Scores</h3><span class="meta">${rnd} · Updated ${upd}</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>Status</th><th>Player</th><th>Score</th><th>Detail</th></tr></thead><tbody>${madeR}${cutR?`<tr><td colspan="4" style="padding:.4rem 1.25rem;background:var(--gray-50);font-size:.68rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em">Missed Cut</td></tr>${cutR}`:''}</tbody></table></div></div>`;
+    return;
+  }
+
+  // Pre-tournament: show confirmed field alphabetically
+  const field=S.demoMode?DEMO_PLAYERS.map(p=>p.displayName).sort():MASTERS_2026_FIELD;
+  const rows=field.map(name=>`<tr><td class="lb-pos">—</td><td class="lb-name">${name}</td><td class="lb-even">—</td><td class="lb-detail">Tournament starts Apr 10</td></tr>`).join('');
+  el.innerHTML=`<div class="alert alert-info" style="margin-bottom:1.25rem"><span>📅</span><span>The 2026 Masters begins <strong>April 10</strong>. Scores will update automatically once play begins.</span></div><div class="card"><div class="card-header"><h3>2026 Masters Field — ${field.length} Players</h3><span class="meta">Alphabetical order</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>—</th><th>Player</th><th>Score</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 
 // ── ADMIN ────────────────────────────────────────────────────────────
