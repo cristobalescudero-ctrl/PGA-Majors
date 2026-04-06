@@ -826,18 +826,11 @@ function initUI(){
 async function init(){
   S.sbUrl='https://atkdzfhoadnoyhbyxwwp.supabase.co';
   S.sbKey='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0a2R6ZmhvYWRub3loYnl4d3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MDIsImV4cCI6MjA5MDMxMDUwMn0.jbMKkE1aurjalbLSkIvP2t4QBdGHrJCT2eBmLyR4xVk';
-  loadConfig();
-  if(S.sbUrl&&S.sbKey){
-    // Test connection
-    try{await fetchEntries();S.sbConnected=true;}catch(_){S.sbConnected=false;}
-    document.getElementById('configModal').classList.add('hidden');
-    document.getElementById('setupBanner').classList.add('hidden');
-    S.demoMode=false;
-    initUI();
-  }else{
-    // Show config modal on first load
-    document.getElementById('configModal').classList.remove('hidden');
-  }
+  document.getElementById('configModal').classList.add('hidden');
+  document.getElementById('setupBanner').classList.add('hidden');
+  S.demoMode=false;
+  try{await fetchEntries();S.sbConnected=true;}catch(_){S.sbConnected=false;}
+  initUI();
 }
 
 init();
