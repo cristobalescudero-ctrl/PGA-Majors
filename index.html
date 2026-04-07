@@ -838,7 +838,7 @@ async function renderField() {
 
   var lockBanner = unlocked
     ? '<div style="background:linear-gradient(90deg,#14532d,#166534);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;color:#fff"><span style="font-size:1.2rem">🏌️</span><span style="font-size:.83rem"><strong>Entries locked.</strong> ' + totalE + ' entries submitted. May the best picks win!</span></div>'
-    : '<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;margin-bottom:1.5rem"><span style="font-size:1.2rem">🔒</span><span style="font-size:.83rem;color:var(--gray-500)">Entry deadline: <strong style="color:var(--gray-900)">Thursday April 10 · 8:00 AM EST</strong>. Picks visible now — ownership data may influence late entries.</span></div>';
+    : '<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;margin-bottom:1.5rem"><span style="font-size:1.2rem">🔒</span><span style="font-size:.83rem;color:var(--gray-500)">Entry deadline: <strong style="color:var(--gray-900)">Thursday April 10 · 8:00 AM EST</strong></span></div>';
 
   var heroHtml = '<div class="field-hero">' +
     '<div class="field-stat"><div class="fs-lbl">Total entries</div><div class="fs-val">' + totalE + '</div><div class="fs-sub">$' + (paidCount*CFG.ENTRY_FEE) + ' pool</div></div>' +
