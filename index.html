@@ -678,18 +678,7 @@ async function renderStandings() {
   document.getElementById('poolTotal').textContent = '$' + total;
   document.getElementById('firstPrize').textContent = '$' + first;
 
-  if (!canSeeStandings()) {
-    document.getElementById('standingsContent').innerHTML = buildLockedView(entries);
-    if (window._cdTimer) clearInterval(window._cdTimer);
-    window._cdTimer = setInterval(function() {
-      var df = UNLOCK - new Date(); if (df <= 0) { clearInterval(window._cdTimer); renderStandings(); return; }
-      var dEl=document.getElementById('cdD'); if(dEl) dEl.textContent=pad2(Math.floor(df/86400000));
-      var hEl=document.getElementById('cdH'); if(hEl) hEl.textContent=pad2(Math.floor((df%86400000)/3600000));
-      var mEl=document.getElementById('cdM'); if(mEl) mEl.textContent=pad2(Math.floor((df%3600000)/60000));
-      var sEl=document.getElementById('cdS'); if(sEl) sEl.textContent=pad2(Math.floor((df%60000)/1000));
-    }, 1000);
-    return;
-  }
+if (!canSeeStandings()) { el.innerHTML = '<div class="card"><div class="card-header"><h3>Field Analysis</h3><span class="meta">Unlocks Thu Apr 10 · 8:00 AM EST</span></div><div style="padding:3rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center"><div style="font-size:2rem">🔒</div><p style="font-size:1.05rem;font-weight:700;color:var(--gray-900)">Field analysis unlocks Thursday</p><p style="font-size:.78rem;color:var(--gray-500);padding:.45rem 1rem">Thursday April 10, 2026 · 8:00 AM EST</p></div></div>'; return; }
 
   if (!entries.length) {
     document.getElementById('standingsContent').innerHTML = '<div class="loading-state"><p style="font-size:1rem;font-weight:600;margin-bottom:.5rem">No entries yet</p><button class="btn btn-primary" onclick="showTab(\'enter\')">Submit Entry</button></div>';
