@@ -593,7 +593,19 @@ function clearPick(id) {
 
 // ENTRY FORM
 function renderEntryForm() {
-  var c = document.getElementById('picksContainer'); c.innerHTML = '';
+  var c = document.getElementById('picksContainer');
+  if (isUnlocked()) {
+    var el = document.getElementById('tab-enter').querySelector('.card');
+    el.innerHTML = '<div class="card-header"><h3>Submit Entry — 2026 Masters</h3><span class="meta">Closed</span></div>' +
+      '<div style="padding:3rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">' +
+        '<div style="width:56px;height:56px;border-radius:50%;background:var(--gray-100);border:1px solid var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:1.4rem">&#128683;</div>' +
+        '<p style="font-size:1.05rem;font-weight:700;color:var(--gray-900)">Entries are closed</p>' +
+        '<p style="font-size:.83rem;color:var(--gray-500);line-height:1.6;max-width:300px">The submission deadline was Thursday April 10 at 8:00 AM EST. The tournament is now underway.</p>' +
+        '<p style="font-size:.78rem;color:var(--gray-500);background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.45rem 1rem">Check the Standings tab to follow your picks.</p>' +
+      '</div>';
+    return;
+  }
+  c.innerHTML = '';
   for (var i = 1; i <= 5; i++) {
     var div = document.createElement('div'); div.className = 'form-group';
     var lbl = document.createElement('label'); lbl.className = 'form-label';
