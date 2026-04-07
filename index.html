@@ -210,6 +210,17 @@ input,select,textarea{font-family:inherit;}
 </head>
 <body>
 
+<!-- Edit Modal -->
+<div class="modal-overlay hidden" id="editModal" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal" style="max-width:640px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <h3 style="font-size:1rem;font-weight:700">✏️ Edit Entry</h3>
+      <button class="btn btn-ghost btn-sm" onclick="closeEditModal()">✕ Close</button>
+    </div>
+    <div id="editModalBody"></div>
+  </div>
+</div>
+
 <!-- Header -->
 <header class="site-header">
   <div class="container header-inner">
@@ -538,8 +549,17 @@ function scoreEntry(entry){
     const p=findPlayer(name);
     return{name,found:!!p,score:p?.score??null,madeCut:p?p.madeCut:true,scoreDisp:p?.scoreDisp??fmtPar(p?.score??0)};
   });
-  const preCut=round<=2||activePlayers().length===0;
-  const eligible=preCut?results.filter(r=>r.found):results.filter(r=>r.found&&r.madeCut);
+
+  // Only apply cut disqualification after Round 2 is fully complete
+  // During R1, R2 in-progress, or pre-tournament: treat everyone as still alive
+  const cutApplied = S.demoMode
+    ? DEMO_META.round >= 3
+    : (S.round >= 3 || (S.round === 2 && S.tStatus?.toUpperCase().includes('FINAL')));
+
+  const eligible = cutApplied
+    ? results.filter(r=>r.found && r.madeCut)
+    : results.filter(r=>r.found);
+
   if(eligible.length<3)return{results,totalScore:null,qualifies:false,best3:[]};
   const sorted=[...eligible].sort((a,b)=>a.score-b.score);
   const best3=sorted.slice(0,3);const total=best3.reduce((s,r)=>s+r.score,0);
@@ -730,8 +750,14 @@ async function renderStandings(){
     const sub=(e.entry_label&&e.entry_label!==e.participant_name)?`<div class="entry-sub">${e.participant_name}</div>`:'';
     rows+=`<tr class="${trC}"><td style="width:48px">${rb}</td><td><div class="entry-name">${lbl}${pb}</div>${sub}</td><td style="width:80px">${sc}</td><td style="width:60px;color:var(--gray-400);font-size:.77rem">${fmtPar(e.tiebreaker??0)}</td><td><div class="picks-row">${picks}</div></td><td style="text-align:right;width:80px">${pz}</td></tr>`;
   });
+  const cutApplied = S.demoMode
+    ? DEMO_META.round >= 3
+    : (S.round >= 3 || (S.round === 2 && S.tStatus?.toUpperCase().includes('FINAL')));
+  const cutNote = !S.demoMode && !cutApplied && S.pgaPlayers.length
+    ? `<div class="alert alert-info" style="margin-top:1rem">ℹ️ Cut has not been applied yet — all entries are preliminary until Round 2 is complete on Friday.</div>`
+    : '';
   const winRef=winScore!==null?`<span style="color:var(--gray-400);font-size:.72rem">Winner ref: <strong style="color:var(--red)">${fmtPar(winScore)}</strong></span>`:'';
-  document.getElementById('standingsContent').innerHTML=`${podH}${prizeH}<div class="card"><div class="card-header"><h3>Full Standings — ${entries.length} entries · ${roundLabel}</h3>${winRef}</div><div style="overflow-x:auto"><table class="standings-table"><thead><tr><th>#</th><th>Entry</th><th>Score</th><th>TB</th><th>Picks <span style="font-weight:400;text-transform:none;letter-spacing:0">— green = counting</span></th><th style="text-align:right">Prize</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  document.getElementById('standingsContent').innerHTML=`${podH}${prizeH}<div class="card"><div class="card-header"><h3>Full Standings — ${entries.length} entries · ${roundLabel}</h3>${winRef}</div><div style="overflow-x:auto"><table class="standings-table"><thead><tr><th>#</th><th>Entry</th><th>Score</th><th>TB</th><th>Picks <span style="font-weight:400;text-transform:none;letter-spacing:0">— green = counting</span></th><th style="text-align:right">Prize</th></tr></thead><tbody>${rows}</tbody></table></div></div>${cutNote}`;
 }
 
 // ── RENDER LEADERBOARD ───────────────────────────────────────────────
@@ -772,6 +798,76 @@ function adminLogin(){
     renderAdmin();
   }else{alert('Incorrect password.');}
 }
+// ── EDIT MODAL ───────────────────────────────────────────────────────
+function openEditModal(id){
+  const e=S.liveEntries.find(x=>x.id===id);if(!e)return;
+  const field=MASTERS_2026_FIELD;
+  const opts=field.map(n=>`<option value="${n}">${n}</option>`).join('');
+  const pickSelects=[1,2,3,4,5].map(i=>{
+    const cur=e.players?.[i-1]||'';
+    return `<div class="form-group">
+      <label class="form-label">Pick ${i}</label>
+      <select class="form-select" id="ep_${i}">
+        <option value="">Select…</option>${field.map(n=>`<option value="${n}"${n===cur?' selected':''}>${n}</option>`).join('')}
+      </select>
+    </div>`;
+  }).join('');
+  const altOpts=`<option value="">None</option>`+field.map(n=>`<option value="${n}"${n===e.alternate?' selected':''}>${n}</option>`).join('');
+  document.getElementById('editModalBody').innerHTML=`
+    <div class="form-group" style="margin-bottom:.75rem">
+      <label class="form-label">Entry Label</label>
+      <input type="text" class="form-control" id="ep_label" value="${e.entry_label||''}">
+    </div>
+    <div class="form-group" style="margin-bottom:.75rem">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" id="ep_name" value="${e.participant_name||''}">
+    </div>
+    <div class="form-group" style="margin-bottom:.75rem">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" id="ep_email" value="${e.email||''}">
+    </div>
+    <hr class="form-divider">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">${pickSelects}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+      <div class="form-group">
+        <label class="form-label">Alternate</label>
+        <select class="form-select" id="ep_alt">${altOpts}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tiebreaker</label>
+        <input type="number" class="form-control" id="ep_tb" value="${e.tiebreaker??0}" min="-30" max="30">
+      </div>
+    </div>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem">
+      <button class="btn btn-primary" onclick="saveEdit('${id}')">✓ Save Changes</button>
+      <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
+    </div>
+    <div id="editError" class="alert alert-error hidden" style="margin-top:.75rem"></div>`;
+  document.getElementById('editModal').classList.remove('hidden');
+}
+function closeEditModal(){document.getElementById('editModal').classList.add('hidden');}
+async function saveEdit(id){
+  const players=[];
+  for(let i=1;i<=5;i++){const v=document.getElementById(`ep_${i}`)?.value;if(v)players.push(v);}
+  if(players.length<3){alert('Need at least 3 picks.');return;}
+  if(new Set(players).size!==players.length){alert('Duplicate picks found.');return;}
+  const tb=parseInt(document.getElementById('ep_tb').value,10);
+  if(isNaN(tb)){alert('Invalid tiebreaker.');return;}
+  const patch={
+    participant_name:document.getElementById('ep_name').value.trim(),
+    entry_label:document.getElementById('ep_label').value.trim(),
+    email:document.getElementById('ep_email').value.trim(),
+    players,alternate:document.getElementById('ep_alt').value,tiebreaker:tb
+  };
+  try{
+    await updateEntry(id,patch);
+    closeEditModal();
+    renderAdmin();
+  }catch(e){
+    const el=document.getElementById('editError');el.textContent='Error: '+e.message;el.classList.remove('hidden');
+  }
+}
+
 async function renderAdmin(){
   document.getElementById('adminContent').innerHTML='<div class="loading-state"><div class="spinner"></div>Loading…</div>';
   const entries=await fetchEntries();S.liveEntries=entries;
@@ -786,12 +882,13 @@ async function renderAdmin(){
     <td style="white-space:nowrap;color:var(--gray-400);font-size:.75rem">${new Date(e.submitted_at).toLocaleDateString()}</td>
     <td><span class="badge ${e.payment_confirmed?'badge-ok':'badge-pending'}">${e.payment_confirmed?'✅ Paid':'⏳ Pending'}</span></td>
     <td style="white-space:nowrap">
+      <button class="btn btn-sm btn-ghost" onclick="openEditModal('${e.id}')" style="margin-right:4px">✏️ Edit</button>
       <button class="btn btn-sm ${e.payment_confirmed?'btn-ghost':'btn-success'}" onclick="togglePay('${e.id}',${!e.payment_confirmed})">${e.payment_confirmed?'↩ Undo':'✓ Paid'}</button>
       <button class="btn btn-sm btn-danger" onclick="delEntry('${e.id}')" style="margin-left:4px">🗑</button>
     </td></tr>`).join('')||`<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--gray-400)">No entries yet.</td></tr>`;
   document.getElementById('adminContent').innerHTML=`
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
-      <div style="font-size:.83rem;color:var(--gray-700)"><strong>${entries.length}</strong> entries &nbsp;·&nbsp; <strong>${paidCount}</strong> paid &nbsp;·&nbsp; Pool: <strong style="color:var(--primary)">$${paidCount*CFG.ENTRY_FEE}</strong></div>
+      <div style="font-size:.83rem;color:var(--gray-700)"><strong>${entries.length}</strong> entries &nbsp;·&nbsp; <strong>${paidCount}</strong> paid &nbsp;·&nbsp; Pool: <strong style="color:var(--primary)">${paidCount*CFG.ENTRY_FEE}</strong></div>
       <button class="btn btn-ghost btn-sm" onclick="renderAdmin()">⟳ Refresh</button>
     </div>
     <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Entry</th><th>Email</th><th>Players</th><th>TB</th><th>Submitted</th><th>Payment</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
