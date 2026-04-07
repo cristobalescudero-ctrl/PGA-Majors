@@ -11,20 +11,15 @@ html{font-size:15px;-webkit-font-smoothing:antialiased;}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:#1a1a1a;min-height:100vh;}
 button{cursor:pointer;font-family:inherit;}
 input,select,textarea{font-family:inherit;}
-
-/* ── Tournament Theme Variables ── */
 :root{
   --primary:#006747;--primary-d:#004d35;--primary-x:#003526;
-  --accent:#C8A951;--accent-l:#f5e9c4;
-  --bg:#F6F3ED;--white:#fff;
+  --accent:#C8A951;--bg:#F6F3ED;--white:#fff;
   --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
   --gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;
   --red:#dc2626;--red-l:#fef2f2;
   --shadow:0 4px 16px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
   --radius:12px;--radius-sm:8px;
 }
-
-/* ── Layout ── */
 .container{max-width:1140px;margin:0 auto;padding:0 1.25rem;}
 .site-header{background:linear-gradient(160deg,var(--primary-x) 0%,var(--primary-d) 40%,var(--primary) 100%);padding:1.5rem 0 1.25rem;border-bottom:2px solid rgba(200,169,81,.35);}
 .header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
@@ -37,15 +32,7 @@ input,select,textarea{font-family:inherit;}
 .dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;}
 .dot-live{background:#34d399;box-shadow:0 0 6px #34d399;animation:pdot 2s infinite;}
 .dot-off{background:#f87171;}
-.dot-demo{background:var(--accent);box-shadow:0 0 6px var(--accent);animation:pdot 2s infinite;}
 @keyframes pdot{0%,100%{opacity:1}50%{opacity:.4}}
-.demo-banner{background:linear-gradient(90deg,#78350f,#92400e);border-bottom:1px solid rgba(255,255,255,.08);padding:.6rem 0;}
-.demo-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
-.demo-inner p{color:#fde68a;font-size:.78rem;font-weight:500;}
-.demo-badge{display:inline-flex;align-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:3px 8px;color:#fde68a;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
-.btn-tog{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:5px 12px;color:#fde68a;font-size:.75rem;font-weight:600;white-space:nowrap;transition:background .15s;}
-.btn-tog:hover{background:rgba(255,255,255,.22);}
-/* Nav */
 .main-nav{background:#fff;border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);}
 .nav-inner{display:flex;align-items:stretch;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
 .nav-inner::-webkit-scrollbar{display:none;}
@@ -55,7 +42,6 @@ input,select,textarea{font-family:inherit;}
 .page-content{padding:1.5rem 0 4rem;}
 .tab-pane{display:none;}
 .tab-pane.active{display:block;}
-/* Podium */
 .podium-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1.25rem;}
 .podium-card{border-radius:var(--radius);padding:1.1rem 1rem;position:relative;overflow:hidden;box-shadow:var(--shadow);}
 .podium-card-1{background:linear-gradient(135deg,#7c5c00,#b8902a);color:#fff;}
@@ -68,12 +54,10 @@ input,select,textarea{font-family:inherit;}
 .podium-prize{font-size:.73rem;opacity:.7;margin-top:6px;}
 .podium-prize strong{font-size:.9rem;font-weight:700;opacity:1;}
 .podium-empty{opacity:.3;}
-/* Card */
 .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid var(--gray-100);}
 .card-header h3{font-size:.9rem;font-weight:700;color:var(--gray-900);}
 .card-header .meta{font-size:.73rem;color:var(--gray-400);}
-/* Tables */
 .standings-table{width:100%;border-collapse:collapse;}
 .standings-table thead th{padding:.65rem 1rem;font-size:.67rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gray-400);background:var(--gray-50);border-bottom:1px solid var(--gray-200);white-space:nowrap;}
 .standings-table thead th:first-child{padding-left:1.25rem;}
@@ -129,12 +113,6 @@ input,select,textarea{font-family:inherit;}
 .lb-over{color:#166534;font-weight:700;}
 .lb-even{color:var(--gray-500);font-weight:700;}
 .lb-detail{font-size:.72rem;color:var(--gray-400);}
-.winner-banner{background:linear-gradient(90deg,var(--primary-x),var(--primary-d));border-radius:var(--radius);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;box-shadow:var(--shadow);}
-.winner-trophy{font-size:2.2rem;flex-shrink:0;}
-.winner-info .title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(200,169,81,.7);}
-.winner-info .name{font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;line-height:1.2;}
-.winner-info .score{font-size:1rem;font-weight:700;color:var(--accent);margin-top:2px;}
-/* Form */
 .form-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
 .picks-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;}
 .form-group{display:flex;flex-direction:column;gap:5px;}
@@ -144,25 +122,21 @@ input,select,textarea{font-family:inherit;}
 .form-control:focus,.form-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,103,71,.1);}
 .form-text{font-size:.7rem;color:var(--gray-400);margin-top:3px;}
 .form-divider{border:none;border-top:1px solid var(--gray-200);margin:1.25rem 0;}
-/* Player search */
 .player-search-wrap{position:relative;}
 .player-search-input{padding:.5rem .85rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm) var(--radius-sm) 0 0;font-size:.83rem;color:var(--gray-900);background:#fff;outline:none;width:100%;transition:border-color .15s;}
 .player-search-input:focus{border-color:var(--primary);}
 .player-dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--primary);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:180px;overflow-y:auto;z-index:200;display:none;}
 .player-dropdown.open{display:block;}
 .player-option{padding:.45rem .85rem;font-size:.8rem;cursor:pointer;color:var(--gray-900);transition:background .1s;}
-.player-option:hover,.player-option.selected-opt{background:var(--gray-50);}
+.player-option:hover{background:var(--gray-50);}
 .player-selected{display:flex;align-items:center;justify-content:space-between;padding:.45rem .85rem;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:var(--radius-sm);font-size:.8rem;font-weight:600;color:#166534;margin-top:4px;min-height:32px;}
 .player-selected span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.player-clear{background:none;border:none;color:#166534;font-size:1rem;cursor:pointer;padding:0 0 0 6px;flex-shrink:0;}
-.player-empty{color:var(--gray-400);font-size:.75rem;padding:.45rem .85rem;}
-/* Alerts */
+.player-clear{background:none;border:none;color:#166634;font-size:1rem;cursor:pointer;padding:0 0 0 6px;flex-shrink:0;}
 .alert{display:flex;align-items:flex-start;gap:10px;padding:.85rem 1.1rem;border-radius:var(--radius-sm);font-size:.82rem;line-height:1.5;margin-bottom:1.25rem;}
 .alert-warning{background:#fffbeb;border:1px solid #fde68a;color:#78350f;}
 .alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d;}
 .alert-info{background:#f0f9ff;border:1px solid #bae6fd;color:#0c4a6e;}
 .alert-error{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;}
-/* Buttons */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:.6rem 1.25rem;border-radius:var(--radius-sm);font-size:.82rem;font-weight:600;border:none;transition:all .15s;white-space:nowrap;cursor:pointer;}
 .btn-primary{background:var(--primary);color:#fff;}
 .btn-primary:hover{background:var(--primary-d);}
@@ -174,7 +148,6 @@ input,select,textarea{font-family:inherit;}
 .btn-success:hover{background:#dcfce7;}
 .btn-sm{padding:.38rem .8rem;font-size:.74rem;}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
-/* Rules */
 .rules-body{padding:1.5rem 1.75rem;}
 .rules-body h2{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--primary);margin-bottom:.5rem;}
 .rules-body .lead{color:var(--gray-500);margin-bottom:1.5rem;font-size:.88rem;}
@@ -183,11 +156,9 @@ input,select,textarea{font-family:inherit;}
 .rules-body li{font-size:.85rem;line-height:1.55;color:var(--gray-700);}
 .rules-body li strong{color:var(--gray-900);}
 .rules-note{background:var(--gray-50);border-radius:var(--radius-sm);padding:.85rem 1.1rem;margin-top:1rem;font-size:.83rem;line-height:1.6;}
-.rules-note .label{font-weight:700;color:var(--gray-900);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block;}
 .pay-options{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.75rem;}
 .pay-box{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.85rem;text-align:center;font-size:.83rem;line-height:1.6;}
 .pay-box strong{display:block;margin-bottom:2px;color:var(--gray-900);}
-/* Admin */
 .admin-table{width:100%;border-collapse:collapse;font-size:.78rem;}
 .admin-table th{padding:.55rem .85rem;text-align:left;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray-400);background:var(--gray-50);border-bottom:1px solid var(--gray-200);}
 .admin-table td{padding:.65rem .85rem;border-bottom:1px solid var(--gray-100);vertical-align:middle;}
@@ -203,37 +174,27 @@ input,select,textarea{font-family:inherit;}
 .spinner{width:28px;height:28px;border:2px solid var(--gray-200);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;margin:2rem auto;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-state{text-align:center;padding:2.5rem;color:var(--gray-400);font-size:.85rem;}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;}
-.modal{background:#fff;border-radius:var(--radius);padding:1.75rem;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.edit-section{margin-top:1.5rem;border-top:2px solid var(--gray-200);padding-top:1.25rem;}
+.hidden{display:none!important;}
 @media(max-width:768px){.header-title h1{font-size:1.35rem;}.podium-grid{grid-template-columns:1fr 1fr;}.form-grid-3{grid-template-columns:1fr 1fr;}.picks-grid{grid-template-columns:1fr 1fr;}.prize-grid{grid-template-columns:1fr 1fr;}}
 @media(max-width:520px){.header-title h1{font-size:1.1rem;}.podium-grid{grid-template-columns:1fr;}.form-grid-3,.picks-grid{grid-template-columns:1fr;}.nav-btn{padding:.75rem .75rem;font-size:.76rem;}.pay-options{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <header class="site-header">
   <div class="container header-inner">
     <div class="header-title">
-      <h1 id="tourneyTitle">2026 Masters Pool</h1>
-      <p id="tourneySubtitle">Augusta National · April 10–13, 2026</p>
+      <h1>2026 Masters Pool</h1>
+      <p>Augusta National · April 10–13, 2026</p>
     </div>
     <div class="header-meta">
       <div class="prize-tag">Pool &nbsp;<strong id="poolTotal">$0</strong>&nbsp;·&nbsp;🥇&nbsp;<strong id="firstPrize">$0</strong></div>
-      <div class="status-bar"><span class="dot dot-demo" id="statusDot"></span><span id="statusText">Loading…</span></div>
+      <div class="status-bar"><span class="dot dot-off" id="statusDot"></span><span id="statusText">Loading…</span></div>
     </div>
   </div>
 </header>
 
-<!-- Demo Banner -->
-<div class="demo-banner hidden" id="demoBanner">
-  <div class="container demo-inner">
-    <p><span class="demo-badge">⚡ Demo</span>&nbsp;Showing <strong>2025 Masters historical data</strong>.</p>
-    <button class="btn-tog" onclick="toggleMode()" id="modeToggleBtn">↩ Switch to 2026 Live Pool</button>
-  </div>
-</div>
-
-<!-- Nav -->
 <nav class="main-nav">
   <div class="container nav-inner">
     <button class="nav-btn active" data-tab="rules"       onclick="showTab('rules')">📋 Rules</button>
@@ -258,7 +219,7 @@ input,select,textarea{font-family:inherit;}
     <div class="tab-pane active" id="tab-rules">
       <div class="card">
         <div class="rules-body">
-          <h2 id="rulesTitle">2026 Masters Pool Rules</h2>
+          <h2>2026 Masters Pool Rules</h2>
           <p class="lead">Hosted by Joe Rodriguez, Jeff Arnold &amp; Elio Duarte</p>
           <h4>How to Enter</h4>
           <ul>
@@ -294,13 +255,13 @@ input,select,textarea{font-family:inherit;}
     <div class="tab-pane" id="tab-enter">
       <div class="card">
         <div class="card-header">
-          <h3 id="enterTitle">Submit Entry — 2026 Masters</h3>
-          <span class="meta" id="enterDeadline">Deadline: April 8 at 7 PM EST</span>
+          <h3>Submit Entry — 2026 Masters</h3>
+          <span class="meta">Deadline: April 8 at 7 PM EST</span>
         </div>
         <div style="padding:1.25rem 1.5rem">
           <div class="alert alert-warning">
             <span>⏰</span>
-            <span id="deadlineAlert"><strong>Deadline: April 8, 2026 · 7:00 PM EST</strong> — $25 per entry via Zelle <strong>(201) 213-7212</strong> or Venmo <strong>@Jeff-Arnold-223</strong> to Jeff Arnold.</span>
+            <span><strong>Deadline: April 8, 2026 · 7:00 PM EST</strong> — $25 per entry via Zelle <strong>(201) 213-7212</strong> or Venmo <strong>@Jeff-Arnold-223</strong> to Jeff Arnold.</span>
           </div>
           <div class="form-grid-3">
             <div class="form-group"><label class="form-label">Your Name <span class="req">*</span></label><input type="text" class="form-control" id="fName" placeholder="Full name"></div>
@@ -308,12 +269,12 @@ input,select,textarea{font-family:inherit;}
             <div class="form-group"><label class="form-label">Email <span class="req">*</span></label><input type="email" class="form-control" id="fEmail" placeholder="you@email.com"></div>
           </div>
           <hr class="form-divider">
-          <p style="font-size:.82rem;font-weight:700;color:var(--gray-900);margin-bottom:.85rem">🏌️ Your 5 Picks <span style="font-weight:400;color:var(--gray-400)">— need ≥3 to survive the cut to qualify. Type to search.</span></p>
+          <p style="font-size:.82rem;font-weight:700;color:var(--gray-900);margin-bottom:.85rem">🏌️ Your 5 Picks <span style="font-weight:400;color:var(--gray-400)">— need ≥3 to survive the cut. Type to search.</span></p>
           <div class="picks-grid" id="picksContainer"></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.85rem">
             <div class="form-group">
               <label class="form-label">🔄 Alternate</label>
-              <div class="player-search-wrap" id="altWrap"></div>
+              <div id="altWrap"></div>
               <span class="form-text">Used only if a pick withdraws before teeing off.</span>
             </div>
             <div class="form-group">
@@ -358,13 +319,12 @@ input,select,textarea{font-family:inherit;}
           </div>
           <div id="adminPanel" class="hidden">
             <div id="adminContent"></div>
-            <!-- Inline edit form -->
-            <div id="editSection" class="hidden" style="margin-top:1.5rem;border-top:2px solid var(--gray-200);padding-top:1.25rem">
+            <div id="editSection" class="edit-section hidden">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
                 <h3 style="font-size:.9rem;font-weight:700;color:var(--gray-900)">✏️ Edit Entry</h3>
-                <button class="btn btn-ghost btn-sm" onclick="closeEditModal()">✕ Cancel</button>
+                <button class="btn btn-ghost btn-sm" onclick="closeEdit()">✕ Cancel</button>
               </div>
-              <div id="editModalBody"></div>
+              <div id="editBody"></div>
             </div>
           </div>
         </div>
@@ -380,115 +340,42 @@ input,select,textarea{font-family:inherit;}
 <script>
 'use strict';
 
-// ── TOURNAMENT CONFIG — change this each major ──────────────────────
-const TOURNEY = {
-  name:       '2026 Masters',
-  subtitle:   'Augusta National · April 10–13, 2026',
-  deadline:   'April 8, 2026 · 7:00 PM EST',
-  dbTable:    'entries_masters2026',
-  // Header gradient colors
-  colorX:     '#003526',
-  colorD:     '#004d35',
-  colorP:     '#006747',
-  accent:     '#C8A951',
-  bg:         '#F6F3ED',
-};
-
+const TOURNEY={name:'2026 Masters',subtitle:'Augusta National · April 10–13, 2026',deadline:'April 8, 2026 · 7:00 PM EST',dbTable:'entries_masters2026'};
 const CFG={ADMIN_PWD:'HOLT2026!',ENTRY_FEE:25,SPLITS:[0.70,0.20,0.10]};
 const SB_URL='https://atkdzfhoadnoyhbyxwwp.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0a2R6ZmhvYWRub3loYnl4d3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MDIsImV4cCI6MjA5MDMxMDUwMn0.jbMKkE1aurjalbLSkIvP2t4QBdGHrJCT2eBmLyR4xVk';
 const ESPN_URL='https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&event=401811956';
 const PROXY='https://api.allorigins.win/get?url=';
 
-// ── 2026 MASTERS HARDCODED FIELD (fallback before ESPN activates) ────
-const MASTERS_2026_FIELD = [
-  'Ludvig Aberg','Daniel Berger','Akshay Bhatia','Keegan Bradley',
-  'Michael Brennan','Jacob Bridgeman','Sam Burns','Angel Cabrera',
-  'Brian Campbell','Patrick Cantlay','Wyndham Clark','Corey Conners',
-  'Fred Couples','Jason Day','Bryson DeChambeau','Nico Echavarria',
-  'Harris English','Ethan Fang','Matt Fitzpatrick','Tommy Fleetwood',
-  'Ryan Fox','Sergio Garcia','Ryan Gerard','Chris Gotterup',
-  'Max Greyserman','Ben Griffin','Harry Hall','Brian Harman',
-  'Tyrrell Hatton','Russell Henley','Jackson Herrington','Nicolai Hojgaard',
-  'Rasmus Hojgaard','Brandon Holtz','Max Homa','Viktor Hovland',
-  'Mason Howell','Sungjae Im','Casey Jarvis','Dustin Johnson',
-  'Zach Johnson','Naoyuki Kataoka','Johnny Keefer','Michael Kim',
-  'Si Woo Kim','Kurt Kitayama','Jake Knapp','Brooks Koepka',
-  'Fifa Laopakdee','Min Woo Lee','Haotong Li','Shane Lowry',
-  'Robert MacIntyre','Hideki Matsuyama','Matt McCarty','Rory McIlroy',
-  'Tom McKibbin','Maverick McNealy','Collin Morikawa','Rasmus Neergaard-Petersen',
-  'Alex Noren','Andrew Novak','Jose Maria Olazabal','Carlos Ortiz',
-  'Marco Penge','Aldrich Potgieter','Mateo Pulcini','Jon Rahm',
-  'Aaron Rai','Patrick Reed','Kristoffer Reitan','Davis Riley',
-  'Justin Rose','Xander Schauffele','Scottie Scheffler','Charl Schwartzel',
-  'Adam Scott','Vijay Singh','Cameron Smith','J.J. Spaun',
-  'Jordan Spieth','Sam Stevens','Sepp Straka','Nick Taylor',
-  'Justin Thomas','Sami Valimaki','Bubba Watson','Mike Weir',
-  'Danny Willett','Gary Woodland','Cameron Young'
+const MASTERS_2026_FIELD=[
+  'Aaron Rai','Adam Scott','Akshay Bhatia','Alex Noren','Andrew Novak',
+  'Angel Cabrera','Aldrich Potgieter','Brandon Holtz','Brian Campbell',
+  'Brian Harman','Brooks Koepka','Bryson DeChambeau','Bubba Watson',
+  'Cameron Smith','Cameron Young','Carlos Ortiz','Casey Jarvis',
+  'Charl Schwartzel','Chris Gotterup','Collin Morikawa','Corey Conners',
+  'Daniel Berger','Danny Willett','Davis Riley','Dustin Johnson',
+  'Ethan Fang','Nico Echavarria','Fred Couples','Gary Woodland',
+  'Harry Hall','Harris English','Haotong Li','Hideki Matsuyama',
+  'Jackson Herrington','Jacob Bridgeman','Jake Knapp','Jason Day',
+  'Johnny Keefer','Jon Rahm','Jose Maria Olazabal','Jordan Spieth',
+  'Justin Rose','Justin Thomas','Keegan Bradley','Kurt Kitayama',
+  'Ludvig Aberg','Marco Penge','Mason Howell','Matt Fitzpatrick',
+  'Matt McCarty','Mateo Pulcini','Maverick McNealy','Max Greyserman',
+  'Max Homa','Michael Brennan','Michael Kim','Min Woo Lee',
+  'Naoyuki Kataoka','Nicolai Hojgaard','Patrick Cantlay','Patrick Reed',
+  'Rasmus Hojgaard','Rasmus Neergaard-Petersen','Robert MacIntyre',
+  'Rory McIlroy','Russell Henley','Ryan Fox','Ryan Gerard',
+  'Sami Valimaki','Sam Burns','Sam Stevens','Scottie Scheffler',
+  'Sepp Straka','Sergio Garcia','Shane Lowry','Si Woo Kim',
+  'Sungjae Im','Tommy Fleetwood','Tom McKibbin','Tyrrell Hatton',
+  'Vijay Singh','Viktor Hovland','Wyndham Clark','Xander Schauffele',
+  'Fifa Laopakdee','Ben Griffin','J.J. Spaun','Jacob Bridgeman',
+  'Mike Weir','Nick Taylor','Kristoffer Reitan'
 ].sort();
 
-// ── DEMO DATA ────────────────────────────────────────────────────────
-const DEMO_PLAYERS=[
-  {displayName:'Rory McIlroy',score:-17,madeCut:true,detail:'-17 · Champion'},
-  {displayName:'Scottie Scheffler',score:-16,madeCut:true,detail:'-16 · Runner-up'},
-  {displayName:'Tommy Fleetwood',score:-12,madeCut:true,detail:'-12 · T3'},
-  {displayName:'Xander Schauffele',score:-11,madeCut:true,detail:'-11 · T4'},
-  {displayName:'Brian Harman',score:-11,madeCut:true,detail:'-11 · T4'},
-  {displayName:'Jon Rahm',score:-8,madeCut:true,detail:'-8 · T6'},
-  {displayName:'Bryson DeChambeau',score:-7,madeCut:true,detail:'-7 · T7'},
-  {displayName:'Russell Henley',score:-5,madeCut:true,detail:'-5 · T8'},
-  {displayName:'Tyrrell Hatton',score:-4,madeCut:true,detail:'-4 · T9'},
-  {displayName:'Shane Lowry',score:-2,madeCut:true,detail:'-2 · T10'},
-  {displayName:'Sepp Straka',score:0,madeCut:true,detail:'E · T12'},
-  {displayName:'Viktor Hovland',score:3,madeCut:true,detail:'+3 · T14'},
-  {displayName:'Sam Burns',score:4,madeCut:true,detail:'+4 · 16th'},
-  {displayName:'Matt Fitzpatrick',score:2,madeCut:false,detail:'MC'},
-  {displayName:'Collin Morikawa',score:3,madeCut:false,detail:'MC'},
-  {displayName:'Adam Scott',score:4,madeCut:false,detail:'MC'},
-  {displayName:'Justin Thomas',score:3,madeCut:false,detail:'MC'},
-  {displayName:'Jordan Spieth',score:5,madeCut:false,detail:'MC'},
-  {displayName:'Tony Finau',score:4,madeCut:false,detail:'MC'},
-  {displayName:'Keegan Bradley',score:5,madeCut:false,detail:'MC'},
-  {displayName:'Patrick Cantlay',score:3,madeCut:false,detail:'MC'},
-  {displayName:'Brooks Koepka',score:2,madeCut:false,detail:'MC'},
-  {displayName:'Cameron Young',score:6,madeCut:false,detail:'MC'},
-  {displayName:'Justin Rose',score:3,madeCut:false,detail:'MC'},
-  {displayName:'Wyndham Clark',score:4,madeCut:false,detail:'MC'},
-  {displayName:'Hideki Matsuyama',score:5,madeCut:false,detail:'MC'},
-  {displayName:'Tom Kim',score:6,madeCut:false,detail:'MC'},
-  {displayName:'Cameron Smith',score:5,madeCut:false,detail:'MC'},
-  {displayName:'Patrick Reed',score:3,madeCut:false,detail:'MC'},
-];
-const DEMO_ENTRIES=[
-  {id:'d1',participant_name:'Jeff Arnold',entry_label:'Jeff Arnold',email:'j@e.com',players:['Rory McIlroy','Scottie Scheffler','Tommy Fleetwood','Matt Fitzpatrick','Jon Rahm'],alternate:'Xander Schauffele',tiebreaker:-15,payment_confirmed:true,submitted_at:'2025-04-08T14:00:00Z'},
-  {id:'d2',participant_name:'Elio Duarte',entry_label:'Elio',email:'e@e.com',players:['Scottie Scheffler','Rory McIlroy','Tommy Fleetwood','Collin Morikawa','Xander Schauffele'],alternate:'Brian Harman',tiebreaker:-13,payment_confirmed:true,submitted_at:'2025-04-08T15:20:00Z'},
-  {id:'d3',participant_name:'Joe Rodriguez',entry_label:'JRod1',email:'j@r.com',players:['Rory McIlroy','Tommy Fleetwood','Brian Harman','Scottie Scheffler','Justin Thomas'],alternate:'Jon Rahm',tiebreaker:-16,payment_confirmed:true,submitted_at:'2025-04-07T18:30:00Z'},
-  {id:'d4',participant_name:'D. Lazarus',entry_label:'D Laz',email:'d@l.com',players:['Rory McIlroy','Scottie Scheffler','Brian Harman','Xander Schauffele','Jordan Spieth'],alternate:'Tommy Fleetwood',tiebreaker:-17,payment_confirmed:true,submitted_at:'2025-04-08T09:10:00Z'},
-  {id:'d5',participant_name:'Eric Holt',entry_label:'E Holt',email:'e@h.com',players:['Scottie Scheffler','Rory McIlroy','Xander Schauffele','Bryson DeChambeau','Keegan Bradley'],alternate:'Tommy Fleetwood',tiebreaker:-14,payment_confirmed:true,submitted_at:'2025-04-08T11:45:00Z'},
-];
-const DEMO_META={name:'2025 Masters Tournament',round:4,winnerScore:-17};
+let S={adminIn:false,liveEntries:[],pgaPlayers:[],tName:'',tStatus:'',round:0,leaderScore:null,lastUpdated:null,sbConnected:false};
 
-// ── STATE ────────────────────────────────────────────────────────────
-let S={demoMode:false,adminIn:false,liveEntries:[],pgaPlayers:[],tName:'',tStatus:'',round:0,leaderScore:null,lastUpdated:null,sbConnected:false};
-
-// ── APPLY THEME ──────────────────────────────────────────────────────
-function applyTheme(){
-  const r=document.documentElement.style;
-  r.setProperty('--primary',TOURNEY.colorP);
-  r.setProperty('--primary-d',TOURNEY.colorD);
-  r.setProperty('--primary-x',TOURNEY.colorX);
-  r.setProperty('--accent',TOURNEY.accent);
-  r.setProperty('--bg',TOURNEY.bg);
-  document.getElementById('tourneyTitle').textContent=TOURNEY.name+' Pool';
-  document.getElementById('tourneySubtitle').textContent=TOURNEY.subtitle;
-  document.getElementById('rulesTitle').textContent=TOURNEY.name+' Pool Rules';
-  document.getElementById('enterTitle').textContent='Submit Entry — '+TOURNEY.name;
-  document.getElementById('enterDeadline').textContent='Deadline: '+TOURNEY.deadline;
-  document.getElementById('deadlineAlert').innerHTML=`<strong>Deadline: ${TOURNEY.deadline}</strong> — $25 per entry via Zelle <strong>(201) 213-7212</strong> or Venmo <strong>@Jeff-Arnold-223</strong> to Jeff Arnold.`;
-  document.title=TOURNEY.name+' Pool';
-}
-
-// ── SUPABASE ─────────────────────────────────────────────────────────
+// ── SUPABASE ──────────────────────────────────────────────────────
 async function sbFetch(path,opts={}){
   const res=await fetch(SB_URL+'/rest/v1/'+path,{
     headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...(opts.headers||{})},
@@ -498,18 +385,17 @@ async function sbFetch(path,opts={}){
   return res.status===204?null:res.json();
 }
 async function fetchEntries(){
-  if(S.demoMode)return DEMO_ENTRIES;
   try{
     const rows=await sbFetch(`${TOURNEY.dbTable}?order=submitted_at.asc&select=*`);
     S.sbConnected=true;
     return rows.map(r=>({...r,players:Array.isArray(r.players)?r.players:JSON.parse(r.players||'[]')}));
-  }catch(e){console.error('Supabase fetch error:',e);S.sbConnected=false;return[];}
+  }catch(e){console.error('Supabase:',e);S.sbConnected=false;return[];}
 }
 async function insertEntry(e){return sbFetch(TOURNEY.dbTable,{method:'POST',body:e,prefer:'return=representation'});}
 async function updateEntry(id,p){return sbFetch(`${TOURNEY.dbTable}?id=eq.${id}`,{method:'PATCH',body:p,prefer:'return=representation'});}
 async function deleteEntry(id){return sbFetch(`${TOURNEY.dbTable}?id=eq.${id}`,{method:'DELETE',prefer:'return=minimal'});}
 
-// ── ESPN ─────────────────────────────────────────────────────────────
+// ── ESPN ──────────────────────────────────────────────────────────
 async function fetchESPN(){
   let data=null;
   try{const r=await fetch(ESPN_URL);if(r.ok)data=await r.json();}catch(_){}
@@ -533,42 +419,34 @@ function parseESPN(data){
   S.leaderScore=leader?leader.score:null;S.lastUpdated=new Date();
 }
 
-// ── HELPERS ──────────────────────────────────────────────────────────
+// ── HELPERS ───────────────────────────────────────────────────────
 function parsePar(s){if(!s&&s!==0)return 0;const str=String(s).trim().toUpperCase();if(str==='E'||str==='EVEN')return 0;const n=parseInt(str,10);return isNaN(n)?0:n;}
 function fmtPar(n){if(n===0)return'E';return n>0?'+'+n:String(n);}
-function activePlayers(){return S.demoMode?DEMO_PLAYERS:S.pgaPlayers;}
 function findPlayer(name){
-  if(!name)return null;const nl=name.toLowerCase().trim();const players=activePlayers();
-  let p=players.find(p=>p.displayName.toLowerCase()===nl);
+  if(!name)return null;const nl=name.toLowerCase().trim();
+  let p=S.pgaPlayers.find(p=>p.displayName.toLowerCase()===nl);
   if(p)return p;const last=nl.split(' ').pop();
-  return players.find(p=>p.displayName.toLowerCase().includes(nl)||p.displayName.toLowerCase().split(' ').pop()===last)||null;
+  return S.pgaPlayers.find(p=>p.displayName.toLowerCase().includes(nl)||p.displayName.toLowerCase().split(' ').pop()===last)||null;
+}
+function getPlayerList(){
+  if(S.pgaPlayers.length>=80)return S.pgaPlayers.map(p=>p.displayName).sort();
+  return MASTERS_2026_FIELD;
 }
 function scoreEntry(entry){
-  const round=S.demoMode?DEMO_META.round:S.round;
   const results=(entry.players||[]).map(name=>{
     const p=findPlayer(name);
-    return{name,found:!!p,score:p?.score??null,madeCut:p?p.madeCut:true,scoreDisp:p?.scoreDisp??fmtPar(p?.score??0)};
+    return{name,found:!!p,score:p?.score??null,madeCut:p?p.madeCut:true,scoreDisp:p?.scoreDisp??'--'};
   });
-
-  // Only apply cut disqualification after Round 2 is fully complete
-  // During R1, R2 in-progress, or pre-tournament: treat everyone as still alive
-  const cutApplied = S.demoMode
-    ? DEMO_META.round >= 3
-    : (S.round >= 3 || (S.round === 2 && S.tStatus?.toUpperCase().includes('FINAL')));
-
-  const eligible = cutApplied
-    ? results.filter(r=>r.found && r.madeCut)
-    : results.filter(r=>r.found);
-
+  const cutApplied=S.round>=3||(S.round===2&&S.tStatus?.toUpperCase().includes('FINAL'));
+  const eligible=cutApplied?results.filter(r=>r.found&&r.madeCut):results.filter(r=>r.found);
   if(eligible.length<3)return{results,totalScore:null,qualifies:false,best3:[]};
   const sorted=[...eligible].sort((a,b)=>a.score-b.score);
   const best3=sorted.slice(0,3);const total=best3.reduce((s,r)=>s+r.score,0);
   return{results,totalScore:total,qualifies:true,best3};
 }
 function calcStandings(entries){
-  const winScore=S.demoMode?DEMO_META.winnerScore:S.leaderScore;
   const rows=entries.map(e=>{
-    const sc=scoreEntry(e);const tbDiff=winScore!==null?Math.abs((e.tiebreaker??0)-winScore):9999;
+    const sc=scoreEntry(e);const tbDiff=S.leaderScore!==null?Math.abs((e.tiebreaker??0)-S.leaderScore):9999;
     return{...e,...sc,tbDiff};
   }).sort((a,b)=>{
     if(a.qualifies&&!b.qualifies)return-1;if(!a.qualifies&&b.qualifies)return 1;
@@ -595,12 +473,11 @@ function calcPrizes(st,entries){
   return{total,bk};
 }
 
-// ── PLAYER SEARCH WIDGET ─────────────────────────────────────────────
-function buildSearchWidget(containerId, pickIndex){
+// ── PLAYER SEARCH ─────────────────────────────────────────────────
+function buildSearchWidget(containerId,pickIndex){
   const id=`ps_${pickIndex}`;
   const wrap=document.getElementById(containerId)||document.createElement('div');
-  wrap.className='player-search-wrap';
-  wrap.id=containerId;
+  wrap.className='player-search-wrap';wrap.id=containerId;
   wrap.innerHTML=`
     <input type="text" class="player-search-input" id="${id}_input" placeholder="Search player…" autocomplete="off"
       oninput="filterDropdown('${id}')" onfocus="openDropdown('${id}')" onblur="setTimeout(()=>closeDropdown('${id}'),180)">
@@ -612,27 +489,24 @@ function buildSearchWidget(containerId, pickIndex){
     <input type="hidden" id="${id}_val">`;
   return wrap;
 }
-
-function getPlayerList(){
-  // Always use hardcoded Masters field until ESPN Masters data is live
-  if(!S.demoMode && S.pgaPlayers.length >= 80) return S.pgaPlayers.map(p=>p.displayName).sort();
-  return MASTERS_2026_FIELD;
+function getSelectedPicks(){
+  const vals=[];
+  for(let i=1;i<=5;i++){const v=document.getElementById(`ps_${i}_val`)?.value;if(v)vals.push(v);}
+  const av=document.getElementById('ps_alt_val')?.value;if(av)vals.push(av);
+  return vals;
 }
-
 function filterDropdown(id){
   const q=document.getElementById(id+'_input').value.toLowerCase();
   const taken=getSelectedPicks();
   const all=getPlayerList().filter(n=>!taken.includes(n)||(document.getElementById(id+'_val').value===n));
   const filtered=q?all.filter(n=>n.toLowerCase().includes(q)):all;
   const dd=document.getElementById(id+'_dd');
-  if(!filtered.length){dd.innerHTML=`<div class="player-empty">No players found</div>`;dd.classList.add('open');return;}
+  if(!filtered.length){dd.innerHTML=`<div style="padding:.45rem .85rem;font-size:.8rem;color:var(--gray-400)">No players found</div>`;dd.classList.add('open');return;}
   dd.innerHTML=filtered.slice(0,30).map(n=>`<div class="player-option" onmousedown="selectPick('${id}','${n.replace(/'/g,"\\'")}')"> ${n}</div>`).join('');
   dd.classList.add('open');
 }
-
 function openDropdown(id){filterDropdown(id);}
 function closeDropdown(id){document.getElementById(id+'_dd').classList.remove('open');}
-
 function selectPick(id,name){
   document.getElementById(id+'_val').value=name;
   document.getElementById(id+'_input').value='';
@@ -641,7 +515,6 @@ function selectPick(id,name){
   document.getElementById(id+'_input').placeholder='Selected ✓';
   document.getElementById(id+'_dd').classList.remove('open');
 }
-
 function clearPick(id){
   document.getElementById(id+'_val').value='';
   document.getElementById(id+'_input').value='';
@@ -649,39 +522,23 @@ function clearPick(id){
   document.getElementById(id+'_sel').classList.add('hidden');
 }
 
-function getSelectedPicks(){
-  const vals=[];
-  for(let i=1;i<=5;i++){const v=document.getElementById(`ps_${i}_val`)?.value;if(v)vals.push(v);}
-  const av=document.getElementById('ps_alt_val')?.value;if(av)vals.push(av);
-  return vals;
-}
-
-// ── RENDER ENTRY FORM ────────────────────────────────────────────────
+// ── ENTRY FORM ────────────────────────────────────────────────────
 function renderEntryForm(){
-  const container=document.getElementById('picksContainer');
-  container.innerHTML='';
+  const container=document.getElementById('picksContainer');container.innerHTML='';
   for(let i=1;i<=5;i++){
-    const div=document.createElement('div');
-    div.className='form-group';
+    const div=document.createElement('div');div.className='form-group';
     div.innerHTML=`<label class="form-label">Pick ${i}${i<=3?' <span class="req">*</span>':''}</label>`;
-    const wrap=buildSearchWidget(`ps_wrap_${i}`,i);
-    div.appendChild(wrap);
+    div.appendChild(buildSearchWidget(`ps_wrap_${i}`,i));
     container.appendChild(div);
   }
-  // Alt
-  const altWrap=document.getElementById('altWrap');
-  altWrap.innerHTML='';
-  const aw=buildSearchWidget('ps_alt_wrap','alt');
-  altWrap.appendChild(aw);
+  const altWrap=document.getElementById('altWrap');altWrap.innerHTML='';
+  altWrap.appendChild(buildSearchWidget('ps_alt_wrap','alt'));
 }
-
 function clearForm(){
   ['fName','fLabel','fEmail','fTB'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   for(let i=1;i<=5;i++)clearPick(`ps_${i}`);
   clearPick('ps_alt');
 }
-
-// ── SUBMIT ───────────────────────────────────────────────────────────
 async function submitEntry(){
   const name=document.getElementById('fName').value.trim();
   const email=document.getElementById('fEmail').value.trim();
@@ -691,16 +548,13 @@ async function submitEntry(){
   if(players.length<3){alert('Please select at least 3 players.');return;}
   if(new Set(players).size!==players.length){alert('Please pick different players.');return;}
   const tbVal=document.getElementById('fTB').value;
-  const tb=parseInt(tbVal,10);
-  if(tbVal===''||isNaN(tb)){alert('Please enter a valid tiebreaker.');return;}
+  const tb=parseInt(tbVal,10);if(tbVal===''||isNaN(tb)){alert('Please enter a valid tiebreaker.');return;}
   const label=document.getElementById('fLabel').value.trim()||name;
   const alt=document.getElementById('ps_alt_val')?.value||'';
-  const btn=document.getElementById('submitBtn');
-  btn.disabled=true;btn.textContent='Saving…';
+  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Saving…';
   document.getElementById('entryError').classList.add('hidden');
-  const entry={participant_name:name,entry_label:label,email,players,alternate:alt,tiebreaker:tb,payment_confirmed:false};
   try{
-    await insertEntry(entry);
+    await insertEntry({participant_name:name,entry_label:label,email,players,alternate:alt,tiebreaker:tb,payment_confirmed:false});
     clearForm();
     document.getElementById('entrySuccess').classList.remove('hidden');
     setTimeout(()=>document.getElementById('entrySuccess').classList.add('hidden'),7000);
@@ -710,14 +564,16 @@ async function submitEntry(){
   btn.disabled=false;btn.textContent='✓ Submit Entry';
 }
 
-// ── RENDER STANDINGS ─────────────────────────────────────────────────
+// ── STANDINGS ─────────────────────────────────────────────────────
 async function renderStandings(){
   document.getElementById('standingsContent').innerHTML='<div class="loading-state"><div class="spinner"></div>Loading…</div>';
   const entries=await fetchEntries();S.liveEntries=entries;
   const st=calcStandings(entries);const prz=calcPrizes(st,entries);
   document.getElementById('poolTotal').textContent='$'+prz.total;
   document.getElementById('firstPrize').textContent='$'+(prz.bk[0].count>0?prz.bk[0].each:Math.floor(prz.total*.70));
-  if(!entries.length){document.getElementById('standingsContent').innerHTML=`<div class="loading-state"><p style="font-size:1rem;font-weight:600;margin-bottom:.5rem">No entries yet</p><button class="btn btn-primary" onclick="showTab('enter')">Submit Entry</button></div>`;return;}
+  if(!entries.length){
+    document.getElementById('standingsContent').innerHTML=`<div class="loading-state"><p style="font-size:1rem;font-weight:600;margin-bottom:.5rem">No entries yet</p><button class="btn btn-primary" onclick="showTab('enter')">Submit Entry</button></div>`;return;
+  }
   const pod=[1,2,3].map(r=>st.find(s=>s.rank===r));
   const medals=['🥇','🥈','🥉'],podL=['1st','2nd','3rd'];
   let podH='<div class="podium-grid">';
@@ -728,8 +584,7 @@ async function renderStandings(){
   podH+='</div>';
   const paidCount=entries.filter(e=>e.payment_confirmed).length;
   const prizeH=`<div class="prize-grid"><div class="prize-box total"><div class="amount">$${prz.total}</div><div class="label">${paidCount} paid · Pool</div></div><div class="prize-box"><div class="amount">$${prz.bk[0].count>0?prz.bk[0].each:Math.floor(prz.total*.70)}</div><div class="label">🥇 1st</div></div><div class="prize-box"><div class="amount">$${prz.bk[1].count>0?prz.bk[1].each:Math.floor(prz.total*.20)}</div><div class="label">🥈 2nd</div></div><div class="prize-box"><div class="amount">$${prz.bk[2].count>0?prz.bk[2].each:Math.floor(prz.total*.10)}</div><div class="label">🥉 3rd</div></div></div>`;
-  const winScore=S.demoMode?DEMO_META.winnerScore:S.leaderScore;
-  const roundLabel=S.demoMode?'Final Results':(S.round>0?`Round ${S.round}`:'Pre-Tournament');
+  const roundLabel=S.round>0?`Round ${S.round}`:'Pre-Tournament';
   let rows='';
   st.forEach(e=>{
     const rnk=e.rank;
@@ -750,46 +605,33 @@ async function renderStandings(){
     const sub=(e.entry_label&&e.entry_label!==e.participant_name)?`<div class="entry-sub">${e.participant_name}</div>`:'';
     rows+=`<tr class="${trC}"><td style="width:48px">${rb}</td><td><div class="entry-name">${lbl}${pb}</div>${sub}</td><td style="width:80px">${sc}</td><td style="width:60px;color:var(--gray-400);font-size:.77rem">${fmtPar(e.tiebreaker??0)}</td><td><div class="picks-row">${picks}</div></td><td style="text-align:right;width:80px">${pz}</td></tr>`;
   });
-  const cutApplied = S.demoMode
-    ? DEMO_META.round >= 3
-    : (S.round >= 3 || (S.round === 2 && S.tStatus?.toUpperCase().includes('FINAL')));
-  const cutNote = !S.demoMode && !cutApplied && S.pgaPlayers.length
-    ? `<div class="alert alert-info" style="margin-top:1rem">ℹ️ Cut has not been applied yet — all entries are preliminary until Round 2 is complete on Friday.</div>`
-    : '';
-  const winRef=winScore!==null?`<span style="color:var(--gray-400);font-size:.72rem">Winner ref: <strong style="color:var(--red)">${fmtPar(winScore)}</strong></span>`:'';
+  const cutApplied=S.round>=3||(S.round===2&&S.tStatus?.toUpperCase().includes('FINAL'));
+  const cutNote=!cutApplied&&S.pgaPlayers.length?`<div class="alert alert-info" style="margin-top:1rem">ℹ️ Cut not yet applied — standings are preliminary until Round 2 is complete on Friday.</div>`:'';
+  const winRef=S.leaderScore!==null?`<span style="color:var(--gray-400);font-size:.72rem">Leader: <strong style="color:var(--red)">${fmtPar(S.leaderScore)}</strong></span>`:'';
   document.getElementById('standingsContent').innerHTML=`${podH}${prizeH}<div class="card"><div class="card-header"><h3>Full Standings — ${entries.length} entries · ${roundLabel}</h3>${winRef}</div><div style="overflow-x:auto"><table class="standings-table"><thead><tr><th>#</th><th>Entry</th><th>Score</th><th>TB</th><th>Picks <span style="font-weight:400;text-transform:none;letter-spacing:0">— green = counting</span></th><th style="text-align:right">Prize</th></tr></thead><tbody>${rows}</tbody></table></div></div>${cutNote}`;
 }
 
-// ── RENDER LEADERBOARD ───────────────────────────────────────────────
+// ── LEADERBOARD ───────────────────────────────────────────────────
 function renderLeaderboard(){
   const el=document.getElementById('leaderboardContent');
-
-  // If live ESPN Masters data is available (80+ players = full Masters field)
-  if(!S.demoMode && S.pgaPlayers.length>=80){
-    const upd=S.lastUpdated?.toLocaleTimeString()||'';
+  if(S.pgaPlayers.length>=20){
     const rnd=S.round>0?`Round ${S.round}`:'Pre-Tournament';
-    let madeR='',cutR='';
-    // Sort alphabetically
+    const upd=S.lastUpdated?.toLocaleTimeString()||'';
     const sorted=[...S.pgaPlayers].sort((a,b)=>a.displayName.localeCompare(b.displayName));
+    let madeR='',cutR='';
     sorted.forEach(p=>{
       const sc=p.score<0?'lb-under':p.score>0?'lb-over':'lb-even';
-      if(!p.madeCut){
-        cutR+=`<tr class="lb-cut"><td class="lb-pos">MC</td><td class="lb-name">${p.displayName}</td><td class="${sc}">${fmtPar(p.score)}</td><td class="lb-detail">Missed Cut</td></tr>`;
-      } else {
-        madeR+=`<tr><td class="lb-pos">—</td><td class="lb-name">${p.displayName}</td><td class="${sc}">${fmtPar(p.score)}</td><td class="lb-detail">${p.detail||''}</td></tr>`;
-      }
+      if(!p.madeCut){cutR+=`<tr class="lb-cut"><td class="lb-pos">MC</td><td class="lb-name">${p.displayName}</td><td class="${sc}">${fmtPar(p.score)}</td><td class="lb-detail">Missed Cut</td></tr>`;}
+      else{madeR+=`<tr><td class="lb-pos">—</td><td class="lb-name">${p.displayName}</td><td class="${sc}">${fmtPar(p.score)}</td><td class="lb-detail">${p.detail||''}</td></tr>`;}
     });
-    el.innerHTML=`<div class="card"><div class="card-header"><h3>2026 Masters — Player Scores</h3><span class="meta">${rnd} · Updated ${upd}</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>Status</th><th>Player</th><th>Score</th><th>Detail</th></tr></thead><tbody>${madeR}${cutR?`<tr><td colspan="4" style="padding:.4rem 1.25rem;background:var(--gray-50);font-size:.68rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em">Missed Cut</td></tr>${cutR}`:''}</tbody></table></div></div>`;
+    el.innerHTML=`<div class="card"><div class="card-header"><h3>2026 Masters — Live Scores</h3><span class="meta">${rnd} · ${upd}</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>Status</th><th>Player</th><th>Score</th><th>Detail</th></tr></thead><tbody>${madeR}${cutR?`<tr><td colspan="4" style="padding:.4rem 1.25rem;background:var(--gray-50);font-size:.68rem;font-weight:700;color:var(--gray-400);text-transform:uppercase">Missed Cut</td></tr>${cutR}`:''}</tbody></table></div></div>`;
     return;
   }
-
-  // Pre-tournament: show confirmed field alphabetically
-  const field=S.demoMode?DEMO_PLAYERS.map(p=>p.displayName).sort():MASTERS_2026_FIELD;
-  const rows=field.map(name=>`<tr><td class="lb-pos">—</td><td class="lb-name">${name}</td><td class="lb-even">—</td><td class="lb-detail">Tournament starts Apr 10</td></tr>`).join('');
-  el.innerHTML=`<div class="alert alert-info" style="margin-bottom:1.25rem"><span>📅</span><span>The 2026 Masters begins <strong>April 10</strong>. Scores will update automatically once play begins.</span></div><div class="card"><div class="card-header"><h3>2026 Masters Field — ${field.length} Players</h3><span class="meta">Alphabetical order</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>—</th><th>Player</th><th>Score</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  const rows=MASTERS_2026_FIELD.map(name=>`<tr><td class="lb-pos">—</td><td class="lb-name">${name}</td><td class="lb-even">—</td><td class="lb-detail">Tournament starts Apr 10</td></tr>`).join('');
+  el.innerHTML=`<div class="alert alert-info" style="margin-bottom:1.25rem"><span>📅</span><span>The 2026 Masters begins <strong>April 10</strong>. Scores will update automatically once play begins.</span></div><div class="card"><div class="card-header"><h3>2026 Masters Field — ${MASTERS_2026_FIELD.length} Players</h3><span class="meta">Alphabetical order</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>—</th><th>Player</th><th>Score</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 
-// ── ADMIN ────────────────────────────────────────────────────────────
+// ── ADMIN ─────────────────────────────────────────────────────────
 function adminLogin(){
   if(document.getElementById('adminPwd').value===CFG.ADMIN_PWD){
     S.adminIn=true;
@@ -798,64 +640,72 @@ function adminLogin(){
     renderAdmin();
   }else{alert('Incorrect password.');}
 }
-// ── EDIT MODAL ───────────────────────────────────────────────────────
-function openEditModal(id){
+
+async function renderAdmin(){
+  closeEdit();
+  document.getElementById('adminContent').innerHTML='<div class="loading-state"><div class="spinner"></div>Loading…</div>';
+  const entries=await fetchEntries();S.liveEntries=entries;
+  const paidCount=entries.filter(e=>e.payment_confirmed).length;
+  document.getElementById('adminConnStatus').innerHTML=S.sbConnected?`<span class="conn-dot"></span>Supabase connected`:`<span class="conn-dot off"></span>Not connected`;
+  const rows=entries.map(e=>`<tr>
+    <td><div style="font-weight:600;font-size:.8rem">${e.entry_label||e.participant_name}</div><div style="color:var(--gray-400);font-size:.7rem">${e.participant_name}</div></td>
+    <td style="color:var(--gray-500);font-size:.75rem">${e.email}</td>
+    <td style="max-width:180px;font-size:.72rem;color:var(--gray-700);line-height:1.4">${(e.players||[]).join(', ')}<br><span style="color:var(--gray-400)">Alt: ${e.alternate||'—'} · TB: ${fmtPar(e.tiebreaker??0)}</span></td>
+    <td style="white-space:nowrap;color:var(--gray-400);font-size:.75rem">${new Date(e.submitted_at).toLocaleDateString()}</td>
+    <td><span class="badge ${e.payment_confirmed?'badge-ok':'badge-pending'}">${e.payment_confirmed?'✅ Paid':'⏳ Pending'}</span></td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-sm btn-ghost" onclick="openEdit('${e.id}')" style="margin-right:4px">✏️ Edit</button>
+      <button class="btn btn-sm ${e.payment_confirmed?'btn-ghost':'btn-success'}" onclick="togglePay('${e.id}',${!e.payment_confirmed})">${e.payment_confirmed?'↩ Undo':'✓ Paid'}</button>
+      <button class="btn btn-sm btn-danger" onclick="delEntry('${e.id}')" style="margin-left:4px">🗑</button>
+    </td></tr>`).join('')||`<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400)">No entries yet.</td></tr>`;
+  document.getElementById('adminContent').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
+      <div style="font-size:.83rem;color:var(--gray-700)"><strong>${entries.length}</strong> entries &nbsp;·&nbsp; <strong>${paidCount}</strong> paid &nbsp;·&nbsp; Pool: <strong style="color:var(--primary)">$${paidCount*CFG.ENTRY_FEE}</strong></div>
+      <button class="btn btn-ghost btn-sm" onclick="renderAdmin()">⟳ Refresh</button>
+    </div>
+    <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Entry</th><th>Email</th><th>Picks</th><th>Submitted</th><th>Payment</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function openEdit(id){
   const e=S.liveEntries.find(x=>x.id===id);if(!e)return;
   const field=MASTERS_2026_FIELD;
   const pickSelects=[1,2,3,4,5].map(i=>{
     const cur=e.players?.[i-1]||'';
-    return `<div class="form-group">
-      <label class="form-label">Pick ${i}</label>
-      <select class="form-select" id="ep_${i}">
-        <option value="">Select…</option>${field.map(n=>`<option value="${n}"${n===cur?' selected':''}>${n}</option>`).join('')}
-      </select>
-    </div>`;
+    return`<div class="form-group"><label class="form-label">Pick ${i}</label><select class="form-select" id="ep_${i}"><option value="">Select…</option>${field.map(n=>`<option value="${n}"${n===cur?' selected':''}>${n}</option>`).join('')}</select></div>`;
   }).join('');
   const altOpts=`<option value="">None</option>`+field.map(n=>`<option value="${n}"${n===e.alternate?' selected':''}>${n}</option>`).join('');
-  document.getElementById('editModalBody').innerHTML=`
+  document.getElementById('editBody').innerHTML=`
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:.75rem">
-      <div class="form-group">
-        <label class="form-label">Entry Label</label>
-        <input type="text" class="form-control" id="ep_label" value="${e.entry_label||''}">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Name</label>
-        <input type="text" class="form-control" id="ep_name" value="${e.participant_name||''}">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-control" id="ep_email" value="${e.email||''}">
-      </div>
+      <div class="form-group"><label class="form-label">Entry Label</label><input type="text" class="form-control" id="ep_label" value="${e.entry_label||''}"></div>
+      <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-control" id="ep_name" value="${e.participant_name||''}"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" id="ep_email" value="${e.email||''}"></div>
     </div>
     <hr class="form-divider">
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-bottom:.75rem">${pickSelects}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
-      <div class="form-group">
-        <label class="form-label">Alternate</label>
-        <select class="form-select" id="ep_alt">${altOpts}</select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Tiebreaker</label>
-        <input type="number" class="form-control" id="ep_tb" value="${e.tiebreaker??0}" min="-30" max="30">
-      </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem">
+      <div class="form-group"><label class="form-label">Alternate</label><select class="form-select" id="ep_alt">${altOpts}</select></div>
+      <div class="form-group"><label class="form-label">Tiebreaker</label><input type="number" class="form-control" id="ep_tb" value="${e.tiebreaker??0}" min="-30" max="30"></div>
     </div>
-    <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem">
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap">
       <button class="btn btn-primary" onclick="saveEdit('${id}')">✓ Save Changes</button>
-      <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-ghost" onclick="closeEdit()">Cancel</button>
     </div>
     <div id="editError" class="alert alert-error hidden" style="margin-top:.75rem"></div>`;
-  document.getElementById('editSection').classList.remove('hidden');
-  document.getElementById('editSection').scrollIntoView({behavior:'smooth',block:'start'});
+  const sec=document.getElementById('editSection');
+  sec.classList.remove('hidden');
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
 }
-function closeEditModal(){
+
+function closeEdit(){
   document.getElementById('editSection').classList.add('hidden');
-  document.getElementById('editModalBody').innerHTML='';
+  document.getElementById('editBody').innerHTML='';
 }
+
 async function saveEdit(id){
   const players=[];
   for(let i=1;i<=5;i++){const v=document.getElementById(`ep_${i}`)?.value;if(v)players.push(v);}
   if(players.length<3){alert('Need at least 3 picks.');return;}
-  if(new Set(players).size!==players.length){alert('Duplicate picks found.');return;}
+  if(new Set(players).size!==players.length){alert('Duplicate picks.');return;}
   const tb=parseInt(document.getElementById('ep_tb').value,10);
   if(isNaN(tb)){alert('Invalid tiebreaker.');return;}
   const patch={
@@ -866,42 +716,16 @@ async function saveEdit(id){
   };
   try{
     await updateEntry(id,patch);
-    closeEditModal();
-    renderAdmin();
+    closeEdit();renderAdmin();
   }catch(e){
     const el=document.getElementById('editError');el.textContent='Error: '+e.message;el.classList.remove('hidden');
   }
 }
 
-async function renderAdmin(){
-  document.getElementById('adminContent').innerHTML='<div class="loading-state"><div class="spinner"></div>Loading…</div>';
-  const entries=await fetchEntries();S.liveEntries=entries;
-  const paidCount=entries.filter(e=>e.payment_confirmed).length;
-  const connHtml=S.sbConnected?`<span class="conn-dot"></span>Supabase connected`:`<span class="conn-dot off"></span>Not connected`;
-  document.getElementById('adminConnStatus').innerHTML=connHtml;
-  const rows=entries.map(e=>`<tr>
-    <td><div style="font-weight:600;font-size:.8rem">${e.entry_label||e.participant_name}</div><div style="color:var(--gray-400);font-size:.7rem">${e.participant_name}</div></td>
-    <td style="color:var(--gray-500);font-size:.75rem">${e.email}</td>
-    <td style="max-width:180px;font-size:.72rem;color:var(--gray-700);line-height:1.4">${(e.players||[]).join(', ')}<br><span style="color:var(--gray-400)">Alt: ${e.alternate||'—'}</span></td>
-    <td style="font-size:.8rem">${fmtPar(e.tiebreaker??0)}</td>
-    <td style="white-space:nowrap;color:var(--gray-400);font-size:.75rem">${new Date(e.submitted_at).toLocaleDateString()}</td>
-    <td><span class="badge ${e.payment_confirmed?'badge-ok':'badge-pending'}">${e.payment_confirmed?'✅ Paid':'⏳ Pending'}</span></td>
-    <td style="white-space:nowrap">
-      <button class="btn btn-sm btn-ghost" onclick="openEditModal('${e.id}')" style="margin-right:4px">✏️ Edit</button>
-      <button class="btn btn-sm ${e.payment_confirmed?'btn-ghost':'btn-success'}" onclick="togglePay('${e.id}',${!e.payment_confirmed})">${e.payment_confirmed?'↩ Undo':'✓ Paid'}</button>
-      <button class="btn btn-sm btn-danger" onclick="delEntry('${e.id}')" style="margin-left:4px">🗑</button>
-    </td></tr>`).join('')||`<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--gray-400)">No entries yet.</td></tr>`;
-  document.getElementById('adminContent').innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
-      <div style="font-size:.83rem;color:var(--gray-700)"><strong>${entries.length}</strong> entries &nbsp;·&nbsp; <strong>${paidCount}</strong> paid &nbsp;·&nbsp; Pool: <strong style="color:var(--primary)">${paidCount*CFG.ENTRY_FEE}</strong></div>
-      <button class="btn btn-ghost btn-sm" onclick="renderAdmin()">⟳ Refresh</button>
-    </div>
-    <div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Entry</th><th>Email</th><th>Players</th><th>TB</th><th>Submitted</th><th>Payment</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-}
-async function togglePay(id,val){try{await updateEntry(id,{payment_confirmed:val});}catch(e){alert('Error: '+e.message);return;}renderAdmin();renderStandings();}
-async function delEntry(id){if(!confirm('Delete this entry?'))return;try{await deleteEntry(id);}catch(e){alert('Error: '+e.message);return;}renderAdmin();renderStandings();}
+async function togglePay(id,val){try{await updateEntry(id,{payment_confirmed:val});}catch(e){alert('Error: '+e.message);return;}renderAdmin();}
+async function delEntry(id){if(!confirm('Delete this entry?'))return;try{await deleteEntry(id);}catch(e){alert('Error: '+e.message);return;}renderAdmin();}
 
-// ── NAV ──────────────────────────────────────────────────────────────
+// ── NAV ───────────────────────────────────────────────────────────
 function showTab(tab){
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -912,25 +736,14 @@ function showTab(tab){
   if(tab==='enter')renderEntryForm();
   if(tab==='admin'&&S.adminIn)renderAdmin();
 }
-function toggleMode(){
-  S.demoMode=!S.demoMode;
-  document.getElementById('demoBanner').classList.toggle('hidden',!S.demoMode);
-  document.getElementById('modeToggleBtn').textContent=S.demoMode?'↩ Switch to Live':'↩ Switch to Demo';
-  updateStatusBar();renderStandings();renderLeaderboard();
-}
+
 function updateStatusBar(){
-  if(S.demoMode){
-    document.getElementById('statusDot').className='dot dot-demo';
-    document.getElementById('statusText').textContent='Demo Mode — 2025 Masters (Final)';
-    document.getElementById('topBarInfo').textContent=`${DEMO_META.name} · Final Results`;
-    document.getElementById('lastUpdatedLabel').textContent='Apr 13, 2025 — Final';
-  }else{
-    document.getElementById('statusDot').className=S.pgaPlayers.length?'dot dot-live':'dot dot-off';
-    document.getElementById('statusText').textContent=S.pgaPlayers.length?`${S.tName} — Round ${S.round}`:'Awaiting tournament data';
-    document.getElementById('topBarInfo').textContent=S.sbConnected?`DB connected · ${S.pgaPlayers.length} players loaded`:'Connecting…';
-    document.getElementById('lastUpdatedLabel').textContent=S.lastUpdated?'PGA updated: '+S.lastUpdated.toLocaleTimeString():'';
-  }
+  document.getElementById('statusDot').className=S.pgaPlayers.length?'dot dot-live':'dot dot-off';
+  document.getElementById('statusText').textContent=S.pgaPlayers.length?`${S.tName} — Round ${S.round}`:'Awaiting tournament data';
+  document.getElementById('topBarInfo').textContent=S.sbConnected?`DB connected · ${S.pgaPlayers.length} players loaded`:'Connecting to database…';
+  document.getElementById('lastUpdatedLabel').textContent=S.lastUpdated?'Updated: '+S.lastUpdated.toLocaleTimeString():'';
 }
+
 async function refreshAll(){
   const btn=document.getElementById('refreshBtn');btn.textContent='⟳ Refreshing…';btn.disabled=true;
   await fetchESPN();updateStatusBar();
@@ -939,10 +752,8 @@ async function refreshAll(){
   if(tab)showTab(tab);
 }
 
-// ── INIT ─────────────────────────────────────────────────────────────
 async function init(){
-  applyTheme();
-  try{await fetchEntries();S.sbConnected=true;}catch(_){S.sbConnected=false;}
+  await fetchEntries();
   updateStatusBar();
   showTab('rules');
   renderEntryForm();
