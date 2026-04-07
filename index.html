@@ -437,26 +437,16 @@ async function sbFetch(path, opts) {
   if (!res.ok) { throw new Error(await res.text()); }
   return res.status === 204 ? null : res.json();
 }
-
-// FIX 2: Retry logic on fetchEntries to suppress spurious "Failed to fetch" on cold load
 async function fetchEntries() {
-  for (var attempt = 0; attempt < 3; attempt++) {
-    try {
-      if (attempt > 0) await new Promise(function(r) { setTimeout(r, 1500); });
-      var rows = await sbFetch(DB_TABLE + '?order=submitted_at.asc&select=*');
-      S.sbConnected = true;
-      return rows.map(function(r) {
-        r.players = Array.isArray(r.players) ? r.players : JSON.parse(r.players || '[]');
-        return r;
-      });
-    } catch(e) {
-      console.warn('DB attempt ' + (attempt + 1) + ' failed:', e.message);
-    }
-  }
-  S.sbConnected = false;
-  return [];
+  try {
+    var rows = await sbFetch(DB_TABLE + '?order=submitted_at.asc&select=*');
+    S.sbConnected = true;
+    return rows.map(function(r) {
+      r.players = Array.isArray(r.players) ? r.players : JSON.parse(r.players || '[]');
+      return r;
+    });
+  } catch(e) { console.error('DB:', e); S.sbConnected = false; return []; }
 }
-
 async function insertEntry(e) { return sbFetch(DB_TABLE, {method:'POST', body:e}); }
 async function updateEntry(id, p) { return sbFetch(DB_TABLE + '?id=eq.' + id, {method:'PATCH', body:p}); }
 async function deleteEntry(id) { return sbFetch(DB_TABLE + '?id=eq.' + id, {method:'DELETE', prefer:'return=minimal'}); }
@@ -711,6 +701,7 @@ async function renderStandings() {
   document.getElementById('poolTotal').textContent = '$' + prz.total;
   document.getElementById('firstPrize').textContent = '$' + (prz.bk[0].count > 0 ? prz.bk[0].each : first);
 
+  // Podium (by score ranking)
   var pod = [1,2,3].map(function(r) { return st.find(function(s) { return s.rank === r; }); });
   var medals = ['🥇','🥈','🥉']; var podL = ['1st','2nd','3rd'];
   var podH = '<div class="podium-grid">';
@@ -728,6 +719,7 @@ async function renderStandings() {
     '<div class="prize-box"><div class="amount">$'+(prz.bk[2].count>0?prz.bk[2].each:third)+'</div><div class="label">🥉 3rd</div></div>' +
     '</div>';
 
+  // Table sorted alphabetically
   var alphaSt = sortAlpha(st);
   var roundLabel = S.round > 0 ? 'Round ' + S.round : 'Pre-Tournament';
   var rows = '';
@@ -781,11 +773,10 @@ function renderLeaderboard() {
   el.innerHTML='<div class="alert alert-info" style="margin-bottom:1.25rem"><span>📅</span><span>The 2026 Masters begins <strong>April 10</strong>. Scores update automatically once play begins.</span></div><div class="card"><div class="card-header"><h3>2026 Masters Field — '+FIELD.length+' Players</h3><span class="meta">Alphabetical</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>—</th><th>Player</th><th>Score</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 
-// FIELD ANALYSIS — FIX 1: was missing el.innerHTML assignment in locked branch
+// FIELD ANALYSIS
 async function renderField() {
   var el = document.getElementById('fieldContent');
   if (!canSeeStandings()) {
-    el.innerHTML = '<div class="card"><div style="padding:2.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">' +
       '<div style="font-size:2rem">🔒</div>' +
       '<p style="font-size:1.05rem;font-weight:700;color:var(--gray-900)">Field Analysis unlocks Thursday</p>' +
       '<p style="font-size:.83rem;color:var(--gray-500);line-height:1.6;max-width:320px">Pick ownership and field breakdown revealed at first tee time on Thursday April 10 at 8:00 AM EST.</p>' +
@@ -857,6 +848,7 @@ async function renderAdmin() {
   var entries=await fetchEntries(); S.liveEntries=entries;
   var paidCount=entries.filter(function(e){return e.payment_confirmed;}).length;
   document.getElementById('adminConnStatus').innerHTML=S.sbConnected?'<span class="conn-dot"></span>Supabase connected':'<span class="conn-dot off"></span>Not connected';
+  // Sort alphabetically
   var sorted=sortAlpha(entries);
   var rows=sorted.map(function(e){
     return'<tr>' +
