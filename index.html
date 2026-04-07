@@ -404,7 +404,8 @@ var S = {
   tName:'', tStatus:'', round:0, leaderScore:null, lastUpdated:null, sbConnected:false
 };
 
-function isUnlocked() { return new Date() >= UNLOCK || S.adminIn; }
+function isUnlocked() { return new Date() >= UNLOCK; }
+function canSeeStandings() { return isUnlocked() || S.adminIn; }
 function pad2(n) { return String(Math.floor(n)).padStart(2,'0'); }
 function parsePar(s) {
   if (!s && s !== 0) return 0;
@@ -677,7 +678,7 @@ async function renderStandings() {
   document.getElementById('poolTotal').textContent = '$' + total;
   document.getElementById('firstPrize').textContent = '$' + first;
 
-  if (!isUnlocked()) {
+  if (!canSeeStandings()) {
     document.getElementById('standingsContent').innerHTML = buildLockedView(entries);
     if (window._cdTimer) clearInterval(window._cdTimer);
     window._cdTimer = setInterval(function() {
@@ -775,8 +776,7 @@ function renderLeaderboard() {
 // FIELD ANALYSIS
 async function renderField() {
   var el = document.getElementById('fieldContent');
-  if (!isUnlocked()) {
-    el.innerHTML='<div class="card"><div style="padding:2.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">' +
+  if (!canSeeStandings()) {
       '<div style="font-size:2rem">🔒</div>' +
       '<p style="font-size:1.05rem;font-weight:700;color:var(--gray-900)">Field Analysis unlocks Thursday</p>' +
       '<p style="font-size:.83rem;color:var(--gray-500);line-height:1.6;max-width:320px">Pick ownership and field breakdown revealed at first tee time on Thursday April 10 at 8:00 AM EST.</p>' +
