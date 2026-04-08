@@ -572,7 +572,7 @@ function filterDropdown(id) {
   var filtered = q ? all.filter(function(n) { return n.toLowerCase().indexOf(q) >= 0; }) : all;
   var dd = document.getElementById(id+'_dd');
   if (!filtered.length) { dd.innerHTML = '<div style="padding:.45rem .85rem;font-size:.8rem;color:var(--gray-400)">No players found</div>'; dd.classList.add('open'); return; }
-  dd.innerHTML = filtered.slice(0,30).map(function(n) { return '<div class="player-option" onmousedown="selectPick(\''+id+'\',\''+n.replace(/'/g,"\\'")+'\')">'+n+'</div>'; }).join('');
+  dd.innerHTML = filtered.slice(0,91).map(function(n) { return '<div class="player-option" onmousedown="selectPick(\''+id+'\',\''+n.replace(/'/g,"\\'")+'\')">'+n+'</div>'; }).join('');
   dd.classList.add('open');
 }
 function closeDropdown(id) { document.getElementById(id+'_dd').classList.remove('open'); }
