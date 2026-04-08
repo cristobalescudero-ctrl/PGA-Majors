@@ -219,7 +219,7 @@ input,select{font-family:inherit;}
   <div class="container header-inner">
     <div class="header-title">
       <h1>2026 Masters Pool</h1>
-      <p>Augusta National · April 10–13, 2026</p>
+      <p>Augusta National · April 9–12, 2026</p>
     </div>
     <div class="header-meta">
       <div class="prize-tag">Pool &nbsp;<strong id="poolTotal">$0</strong>&nbsp;·&nbsp;🥇&nbsp;<strong id="firstPrize">$0</strong></div>
@@ -285,12 +285,12 @@ input,select{font-family:inherit;}
       <div class="card">
         <div class="card-header">
           <h3>Submit Entry — 2026 Masters</h3>
-          <span class="meta">Closes Thu Apr 10 · 8:00 AM EST</span>
+          <span class="meta">Closes Thu Apr 9 · 8:00 AM EST</span>
         </div>
         <div style="padding:1.25rem 1.5rem">
           <div class="alert alert-warning">
             <span>&#9200;</span>
-            <span><strong>Closes Thu Apr 10 · 8:00 AM EST</strong> — $25 via Zelle (201) 213-7212 or Venmo @Jeff-Arnold-223 to Jeff Arnold.</span>
+            <span><strong>Closes Thu Apr 9 · 8:00 AM EST</strong> — $25 via Zelle (201) 213-7212 or Venmo @Jeff-Arnold-223 to Jeff Arnold.</span>
           </div>
           <div class="form-grid-3">
             <div class="form-group"><label class="form-label">Your Name <span class="req">*</span></label><input type="text" class="form-control" id="fName" placeholder="Full name"></div>
@@ -335,12 +335,12 @@ input,select{font-family:inherit;}
         <div class="card">
           <div class="card-header">
             <h3>Field Analysis</h3>
-            <span class="meta">Unlocks Thu Apr 10 · 8:00 AM EST</span>
+            <span class="meta">Unlocks Thu Apr 9 · 8:00 AM EST</span>
           </div>
           <div style="padding:3rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">
             <div style="font-size:2rem">&#128274;</div>
             <p style="font-size:1.05rem;font-weight:700;color:var(--gray-900)">Field analysis unlocks Thursday</p>
-            <p style="font-size:.78rem;color:var(--gray-500);padding:.45rem 1rem">Thursday April 10, 2026 · 8:00 AM EST</p>
+            <p style="font-size:.78rem;color:var(--gray-500);padding:.45rem 1rem">Thursday April 9, 2026 · 8:00 AM EST</p>
           </div>
         </div>
       </div>
@@ -386,7 +386,7 @@ var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 var DB_TABLE = 'entries_masters2026';
 var ESPN_URL = 'https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&event=401811941';
 var PROXY = 'https://api.allorigins.win/get?url=';
-var DEADLINE = new Date(2026, 3, 10, 8, 0, 0);
+var DEADLINE = new Date(2026, 3, 9, 8, 0, 0);
 var TABS = ['rules','enter','leaderboard','standings','field','admin'];
 
 var FIELD = [
@@ -600,7 +600,7 @@ function renderEntryForm() {
       '<div style="padding:3rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">' +
         '<div style="width:56px;height:56px;border-radius:50%;background:var(--gray-100);border:1px solid var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:1.4rem">&#128683;</div>' +
         '<p style="font-size:1.05rem;font-weight:700;color:var(--gray-900)">Entries are closed</p>' +
-        '<p style="font-size:.83rem;color:var(--gray-500);line-height:1.6;max-width:300px">The submission deadline was Thursday April 10 at 8:00 AM EST. The tournament is now underway.</p>' +
+        '<p style="font-size:.83rem;color:var(--gray-500);line-height:1.6;max-width:300px">The submission deadline was Thursday April 9 at 8:00 AM EST. The tournament is now underway.</p>' +
         '<p style="font-size:.78rem;color:var(--gray-500);background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.45rem 1rem">Check the Standings tab to follow your picks.</p>' +
       '</div>';
     return;
@@ -651,7 +651,7 @@ function buildLockedStandings(entries) {
   var diff = DEADLINE - new Date();
   if (diff < 0) diff = 0;
   var html = '<div class="card">';
-  html += '<div class="card-header"><h3>Standings</h3><span class="meta">Unlocks Thu Apr 10 at 8:00 AM EST</span></div>';
+  html += '<div class="card-header"><h3>Standings</h3><span class="meta">Unlocks Thu Apr 9 at 8:00 AM EST</span></div>';
   html += '<div style="padding:2.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">';
   html += '<div style="font-size:2rem">&#128274;</div>';
   html += '<p style="font-size:1.05rem;font-weight:700;color:var(--gray-900)">Picks are sealed until Thursday</p>';
@@ -674,7 +674,7 @@ function buildLockedStandings(entries) {
   html += '<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.5rem .85rem;text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--gray-900)" id="cdM">'+pad2(Math.floor((diff%3600000)/60000))+'</div><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">Min</div></div>';
   html += '<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.5rem .85rem;text-align:center"><div style="font-size:1.3rem;font-weight:700;color:var(--gray-900)" id="cdS">'+pad2(Math.floor((diff%60000)/1000))+'</div><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">Sec</div></div>';
   html += '</div>';
-  html += '<p style="font-size:.78rem;color:var(--gray-500);background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.5rem 1rem">Still need to submit? Entries close <strong>Thu Apr 10 at 8:00 AM EST</strong></p>';
+  html += '<p style="font-size:.78rem;color:var(--gray-500);background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.5rem 1rem">Still need to submit? Entries close <strong>Thu Apr 9 at 8:00 AM EST</strong></p>';
   html += '</div></div>';
   return html;
 }
