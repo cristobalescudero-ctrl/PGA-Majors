@@ -409,7 +409,7 @@ var FIELD = [
   'Shane Lowry','Si Woo Kim','Sungjae Im','Tom McKibbin','Tommy Fleetwood',
   'Tyrrell Hatton','Vijay Singh','Viktor Hovland','Wyndham Clark','Xander Schauffele',
   'Zach Johnson'
-].sort();
+].sort(function(a,b){return a.localeCompare(b,'en',{sensitivity:'base'});});
 
 var S = {
   adminIn:false, liveEntries:[], pgaPlayers:[],
@@ -431,7 +431,7 @@ function sortAlpha(arr) {
   return arr.slice().sort(function(a,b) {
     var na = (a.entry_label || a.participant_name || '').toLowerCase();
     var nb = (b.entry_label || b.participant_name || '').toLowerCase();
-    return na.localeCompare(nb);
+    return na.localeCompare(nb,'en',{sensitivity:'base'});
   });
 }
 
