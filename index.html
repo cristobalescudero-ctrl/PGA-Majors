@@ -42,7 +42,7 @@ input,select{font-family:inherit;}
 .tab-pane.active{display:block;}
 .top-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;padding:.75rem 0 1.25rem;}
 .top-info{font-size:.75rem;color:var(--gray-500);}
-.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:1.25rem;}
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:visible;margin-bottom:1.25rem;}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid var(--gray-100);}
 .card-header h3{font-size:.9rem;font-weight:700;color:var(--gray-900);}
 .card-header .meta{font-size:.73rem;color:var(--gray-400);}
@@ -140,7 +140,7 @@ input,select{font-family:inherit;}
 .player-search-wrap{position:relative;}
 .player-search-input{padding:.5rem .85rem;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm) var(--radius-sm) 0 0;font-size:.83rem;color:var(--gray-900);background:#fff;outline:none;width:100%;}
 .player-search-input:focus{border-color:var(--green);}
-.player-dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--green);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:180px;overflow-y:auto;z-index:200;display:none;}
+.player-dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--green);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:300px;overflow-y:auto;z-index:200;display:none;}
 .player-dropdown.open{display:block;}
 .player-option{padding:.45rem .85rem;font-size:.8rem;cursor:pointer;color:var(--gray-900);}
 .player-option:hover{background:var(--gray-50);}
@@ -287,7 +287,7 @@ input,select{font-family:inherit;}
           <h3>Submit Entry — 2026 Masters</h3>
           <span class="meta">Closes Thu Apr 9 · 8:00 AM EST</span>
         </div>
-        <div style="padding:1.25rem 1.5rem">
+        <div style="padding:1.25rem 1.5rem;overflow:visible">
           <div class="alert alert-warning">
             <span>&#9200;</span>
             <span><strong>Closes Thu Apr 9 · 8:00 AM EST</strong> — $25 via Zelle (201) 213-7212 or Venmo @Jeff-Arnold-223 to Jeff Arnold.</span>
