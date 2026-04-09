@@ -1022,12 +1022,16 @@ async function renderAdmin(){
     +'<div style="display:flex;gap:.5rem;flex-wrap:wrap">'
       +'<button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>'
       +'<button class="btn btn-ghost btn-sm" onclick="renderAdmin()">Refresh</button>'
+    +'<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">'
+      +'<button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="renderAdmin()">Refresh</button>'
       +'<button class="btn btn-sm" onclick="togglePanic()" style="'+panicStyle+'" title="Hides the site for all users. Click the flag 3x on the overlay to restore.">'+panicLabel+'</button>'
-    +'</div></div>'
-    +'<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Entry</th><th>Email</th><th>Picks</th><th>Submitted</th><th>Payment</th><th>Actions</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
-    +'<div style="margin-top:1.25rem;padding:.85rem 1rem;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);font-size:.75rem;color:#78350f;">'
-    +'<strong>Ruling Committee Mode:</strong> Replaces the entire site with a maintenance screen for all users. Use if the app has an issue and you need to pull it down while you fix it. To restore, click the golf flag icon 3 times on the maintenance screen.'
-    +'</div>';
+    +'</div>'
+    +'<div style="font-size:.72rem;color:#78350f;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);padding:.4rem .85rem;margin-top:.5rem;">'
+    +'<strong>Ruling Committee Mode:</strong> Hides the site for all users. To restore, click the flag 3x on the screen.'
+    +'</div>'
+    +'</div>'
+    +'<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Entry</th><th>Email</th><th>Picks</th><th>Submitted</th><th>Payment</th><th>Actions</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function openEdit(id){
   var e=S.liveEntries.find(function(x){ return x.id===id; }); if(!e) return;
