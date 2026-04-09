@@ -825,14 +825,20 @@ async function renderStandings(){
     ? 'TB <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.62rem">(used)</span>'
     : 'TB <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.62rem">(end only)</span>';
 
+  // Pre-compute which ranks have ties (more than one entry sharing that rank)
+  var rankCounts={};
+  displaySt.forEach(function(e){ if(e.rank) rankCounts[e.rank]=(rankCounts[e.rank]||0)+1; });
+
   var rows='';
   displaySt.forEach(function(e){
     var rnk=e.rank;
+    var tied=rnk&&rankCounts[rnk]>1;
+    var lbl=tied?'T'+rnk:rnk?String(rnk):'--';
     var trC=rnk===1?'row-rank-1':rnk===2?'row-rank-2':rnk===3?'row-rank-3':(!e.qualifies&&hasScores?'row-dnq':'');
-    var rb=rnk===1?'<span class="rank-badge rb-1">1</span>'
-      :rnk===2?'<span class="rank-badge rb-2">2</span>'
-      :rnk===3?'<span class="rank-badge rb-3">3</span>'
-      :rnk?'<span class="rb-n">'+rnk+'</span>'
+    var rb=rnk===1?'<span class="rank-badge rb-1">'+lbl+'</span>'
+      :rnk===2?'<span class="rank-badge rb-2">'+lbl+'</span>'
+      :rnk===3?'<span class="rank-badge rb-3">'+lbl+'</span>'
+      :rnk?'<span class="rb-n">'+lbl+'</span>'
       :'<span class="rb-n">--</span>';
     var sc=hasScores
       ?(e.qualifies&&e.totalScore!==null
