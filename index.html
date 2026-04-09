@@ -76,7 +76,7 @@ input,select{font-family:inherit;}
 .podium-card-1{background:linear-gradient(135deg,#7c5c00,#b8902a);color:#fff;}
 .podium-card-2{background:linear-gradient(135deg,#374151,#6b7280);color:#fff;}
 .podium-card-3{background:linear-gradient(135deg,#5c3d1a,#92603a);color:#fff;}
-.podium-card::before{content:'';}
+.podium-card::before{content:attr(data-medal);position:absolute;top:10px;right:14px;font-size:1.8rem;opacity:.2;}
 .podium-rank{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.7;}
 .podium-name{font-size:1rem;font-weight:700;margin:4px 0 2px;}
 .podium-score{font-size:1.4rem;font-weight:700;}
@@ -214,34 +214,38 @@ input,select{font-family:inherit;}
 </style>
 </head>
 <body>
+
 <header class="site-header">
   <div class="container header-inner">
     <div class="header-title">
       <h1>2026 Masters Pool</h1>
-      <p>Augusta National · April 9-12, 2026</p>
+      <p>Augusta National · April 9–12, 2026</p>
     </div>
     <div class="header-meta">
-      <div class="prize-tag">Pool &nbsp;<strong id="poolTotal">$0</strong>&nbsp;· 1st &nbsp;<strong id="firstPrize">$0</strong></div>
+      <div class="prize-tag">Pool &nbsp;<strong id="poolTotal">$0</strong>&nbsp;·&nbsp;🥇&nbsp;<strong id="firstPrize">$0</strong></div>
       <div class="status-bar"><span class="dot dot-off" id="statusDot"></span>&nbsp;<span id="statusText">Loading...</span></div>
     </div>
   </div>
 </header>
+
 <nav class="main-nav">
   <div class="container nav-inner">
-    <button class="nav-btn active" data-tab="rules" onclick="showTab('rules')">Rules</button>
-    <button class="nav-btn" data-tab="enter" onclick="showTab('enter')">Enter Picks</button>
-    <button class="nav-btn" data-tab="leaderboard" onclick="showTab('leaderboard')">Leaderboard</button>
-    <button class="nav-btn" data-tab="standings" onclick="showTab('standings')">Standings</button>
-    <button class="nav-btn" data-tab="field" onclick="showTab('field')">Field Analysis</button>
-    <button class="nav-btn" data-tab="admin" onclick="showTab('admin')">Admin</button>
+    <button class="nav-btn active" data-tab="rules" onclick="showTab('rules')">📋 Rules</button>
+    <button class="nav-btn" data-tab="enter" onclick="showTab('enter')">✏️ Enter Picks</button>
+    <button class="nav-btn" data-tab="leaderboard" onclick="showTab('leaderboard')">⛳ Leaderboard</button>
+    <button class="nav-btn" data-tab="standings" onclick="showTab('standings')">🏆 Standings</button>
+    <button class="nav-btn" data-tab="field" onclick="showTab('field')">📊 Field Analysis</button>
+    <button class="nav-btn" data-tab="admin" onclick="showTab('admin')">🔑 Admin</button>
   </div>
 </nav>
+
 <main class="page-content">
   <div class="container">
     <div class="top-bar">
       <span class="top-info" id="topBarInfo">Connecting...</span>
-      <button class="btn btn-ghost btn-sm" onclick="refreshAll()" id="refreshBtn">Refresh</button>
+      <button class="btn btn-ghost btn-sm" onclick="refreshAll()" id="refreshBtn">&#8635; Refresh</button>
     </div>
+
     <div class="tab-pane active" id="tab-rules">
       <div class="card">
         <div class="rules-body">
@@ -276,6 +280,7 @@ input,select{font-family:inherit;}
         </div>
       </div>
     </div>
+
     <div class="tab-pane" id="tab-enter">
       <div class="card">
         <div class="card-header">
@@ -284,8 +289,8 @@ input,select{font-family:inherit;}
         </div>
         <div style="padding:1.25rem 1.5rem;overflow:visible">
           <div class="alert alert-warning">
-            <span>Deadline:</span>
-            <span><strong>Thu Apr 9 · 8:00 AM EST</strong> — $25 via Zelle (201) 213-7212 or Venmo @Jeff-Arnold-223 to Jeff Arnold.</span>
+            <span>&#9200;</span>
+            <span><strong>Closes Thu Apr 9 · 8:00 AM EST</strong> — $25 via Zelle (201) 213-7212 or Venmo @Jeff-Arnold-223 to Jeff Arnold.</span>
           </div>
           <div class="form-grid-3">
             <div class="form-group"><label class="form-label">Your Name <span class="req">*</span></label><input type="text" class="form-control" id="fName" placeholder="Full name"></div>
@@ -316,12 +321,15 @@ input,select{font-family:inherit;}
         </div>
       </div>
     </div>
+
     <div class="tab-pane" id="tab-leaderboard">
       <div id="leaderboardContent"><div class="loading-state"><div class="spinner"></div></div></div>
     </div>
+
     <div class="tab-pane" id="tab-standings">
       <div id="standingsContent"><div class="loading-state"><div class="spinner"></div></div></div>
     </div>
+
     <div class="tab-pane" id="tab-field">
       <div id="fieldContent">
         <div class="card">
@@ -337,6 +345,7 @@ input,select{font-family:inherit;}
         </div>
       </div>
     </div>
+
     <div class="tab-pane" id="tab-admin">
       <div class="card">
         <div class="card-header"><h3>Admin Panel</h3><span class="meta" id="adminConnStatus"></span></div>
@@ -363,14 +372,17 @@ input,select{font-family:inherit;}
     </div>
   </div>
 </main>
+
 <footer style="text-align:center;padding:2rem 1rem;color:var(--gray-400);font-size:.72rem;border-top:1px solid var(--gray-200);background:#fff;">
   PGA Majors Pool · Joe Rodriguez, Jeff Arnold &amp; Elio Duarte
 </footer>
+
 <script>
 'use strict';
+
 var CFG = { ADMIN_PWD:'HOLT2026!', ENTRY_FEE:25, SPLITS:[0.70,0.20,0.10] };
 var SB_URL = 'https://atkdzfhoadnoyhbyxwwp.supabase.co';
-var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0a2R6ZmhvYWRub3loYnl4d3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MDIsImV4cCI6MjA5MDMxMDUwMn0.jbMKkE1aurjalbLSkIvP2b4QBdGHrJCT2eBmLyR4xVk';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0a2R6ZmhvYWRub3loYnl4d3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MDIsImV4cCI6MjA5MDMxMDUwMn0.jbMKkE1aurjalbLSkIvP2t4QBdGHrJCT2eBmLyR4xVk';
 var DB_TABLE = 'entries_masters2026';
 var ESPN_URL = 'https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&event=401811941';
 var PROXY = 'https://api.allorigins.win/get?url=';
@@ -397,7 +409,7 @@ var FIELD = [
   'Shane Lowry','Si Woo Kim','Sungjae Im','Tom McKibbin','Tommy Fleetwood',
   'Tyrrell Hatton','Vijay Singh','Viktor Hovland','Wyndham Clark','Xander Schauffele',
   'Zach Johnson'
-].sort(function(a,b){ return a.localeCompare(b,'en',{sensitivity:'base'}); });
+].sort(function(a,b){return a.localeCompare(b,'en',{sensitivity:'base'});});
 
 var S = {
   adminIn:false, liveEntries:[], pgaPlayers:[],
@@ -530,7 +542,7 @@ function calcPrizes(st, entries) {
 
 // PLAYER SEARCH
 function getPlayerList() {
-  if (S.pgaPlayers.length >= 80) return S.pgaPlayers.map(function(p) { return p.displayName; }).sort(function(a,b){ return a.localeCompare(b,'en',{sensitivity:'base'}); });
+  if (S.pgaPlayers.length >= 80) return S.pgaPlayers.map(function(p) { return p.displayName; }).sort();
   return FIELD;
 }
 function getSelectedPicks() {
@@ -581,20 +593,19 @@ function clearPick(id) {
 
 // ENTRY FORM
 function renderEntryForm() {
+  var c = document.getElementById('picksContainer');
   if (isUnlocked()) {
-    var card = document.querySelector('#tab-enter .card');
-    if (card) {
-      card.innerHTML = '<div class="card-header"><h3>Submit Entry — 2026 Masters</h3><span class="meta">Closed</span></div>' +
-        '<div style="padding:3rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">' +
-        '<div style="font-size:2rem">&#128683;</div>' +
+    var el = document.getElementById('tab-enter').querySelector('.card');
+    el.innerHTML = '<div class="card-header"><h3>Submit Entry — 2026 Masters</h3><span class="meta">Closed</span></div>' +
+      '<div style="padding:3rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">' +
+        '<div style="width:56px;height:56px;border-radius:50%;background:var(--gray-100);border:1px solid var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:1.4rem">&#128683;</div>' +
         '<p style="font-size:1.05rem;font-weight:700;color:var(--gray-900)">Entries are closed</p>' +
         '<p style="font-size:.83rem;color:var(--gray-500);line-height:1.6;max-width:300px">The submission deadline was Thursday April 9 at 8:00 AM EST. The tournament is now underway.</p>' +
         '<p style="font-size:.78rem;color:var(--gray-500);background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.45rem 1rem">Check the Standings tab to follow your picks.</p>' +
-        '</div>';
-    }
+      '</div>';
     return;
   }
-  var c = document.getElementById('picksContainer'); c.innerHTML = '';
+  c.innerHTML = '';
   for (var i = 1; i <= 5; i++) {
     var div = document.createElement('div'); div.className = 'form-group';
     var lbl = document.createElement('label'); lbl.className = 'form-label';
@@ -637,7 +648,8 @@ function buildLockedStandings(entries) {
   var paidCount = entries.filter(function(e) { return e.payment_confirmed; }).length;
   var total = paidCount * CFG.ENTRY_FEE;
   var first = Math.floor(total*0.70); var second = Math.floor(total*0.20); var third = Math.floor(total*0.10);
-  var diff = DEADLINE - new Date(); if (diff < 0) diff = 0;
+  var diff = DEADLINE - new Date();
+  if (diff < 0) diff = 0;
   var html = '<div class="card">';
   html += '<div class="card-header"><h3>Standings</h3><span class="meta">Unlocks Thu Apr 9 at 8:00 AM EST</span></div>';
   html += '<div style="padding:2.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">';
@@ -699,93 +711,71 @@ async function renderStandings() {
   document.getElementById('poolTotal').textContent = '$' + prz.total;
   document.getElementById('firstPrize').textContent = '$' + (prz.bk[0].count > 0 ? prz.bk[0].each : first);
 
-  var isFinal = S.tStatus.toUpperCase().indexOf('FINAL') >= 0;
-  var showPrize = S.round >= 4 && isFinal;
-  var hasLiveScores = S.pgaPlayers.length >= 20;
-  var displaySt = hasLiveScores ? st : sortAlpha(st);
-  var roundLabel = S.round > 0 ? 'Round ' + S.round : 'Pre-Tournament';
-
   var pod = [1,2,3].map(function(r) { return st.find(function(s) { return s.rank === r; }); });
-  var podL = ['1st','2nd','3rd'];
+  var medals = ['&#127945;','&#127944;','&#127943;']; var podL = ['1st','2nd','3rd'];
   var podH = '<div class="podium-grid">';
   pod.forEach(function(e,i) {
-    if (!e) {
-      podH += '<div class="podium-card podium-card-'+(i+1)+' podium-empty"><div class="podium-rank">'+podL[i]+'</div><div class="podium-name">—</div></div>';
-    } else {
-      var pr = prz.bk[i]; var nm = e.entry_label || e.participant_name;
-      podH += '<div class="podium-card podium-card-'+(i+1)+'"><div class="podium-rank">'+podL[i]+'</div><div class="podium-name">'+nm+'</div><div class="podium-score">'+fmtPar(e.totalScore)+'</div>';
-      if (showPrize) { podH += '<div class="podium-prize">Prize: <strong>$'+pr.each+(pr.count>1?' (split)':'')+'</strong></div>'; }
-      podH += '</div>';
-    }
+    if (!e) { podH += '<div class="podium-card podium-card-'+(i+1)+' podium-empty" data-medal="'+medals[i]+'"><div class="podium-rank">'+podL[i]+'</div><div class="podium-name">—</div></div>'; }
+    else { var pr=prz.bk[i]; var nm=e.entry_label||e.participant_name; podH += '<div class="podium-card podium-card-'+(i+1)+'" data-medal="'+medals[i]+'"><div class="podium-rank">'+podL[i]+'</div><div class="podium-name">'+nm+'</div><div class="podium-score">'+fmtPar(e.totalScore)+'</div><div class="podium-prize">Prize: <strong>$'+pr.each+(pr.count>1?' (split)':'')+'</strong></div></div>'; }
   });
   podH += '</div>';
 
-  var prizeH = '';
-  if (showPrize) {
-    var pc = entries.filter(function(e) { return e.payment_confirmed; }).length;
-    prizeH = '<div class="prize-grid">' +
-      '<div class="prize-box total"><div class="amount">$'+prz.total+'</div><div class="label">'+pc+' paid</div></div>' +
-      '<div class="prize-box"><div class="amount">$'+(prz.bk[0].count>0?prz.bk[0].each:first)+'</div><div class="label">1st</div></div>' +
-      '<div class="prize-box"><div class="amount">$'+(prz.bk[1].count>0?prz.bk[1].each:second)+'</div><div class="label">2nd</div></div>' +
-      '<div class="prize-box"><div class="amount">$'+(prz.bk[2].count>0?prz.bk[2].each:third)+'</div><div class="label">3rd</div></div>' +
-      '</div>';
-  }
+  var pc = entries.filter(function(e) { return e.payment_confirmed; }).length;
+  var prizeH = '<div class="prize-grid">' +
+    '<div class="prize-box total"><div class="amount">$'+prz.total+'</div><div class="label">'+pc+' paid · Pool</div></div>' +
+    '<div class="prize-box"><div class="amount">$'+(prz.bk[0].count>0?prz.bk[0].each:first)+'</div><div class="label">1st</div></div>' +
+    '<div class="prize-box"><div class="amount">$'+(prz.bk[1].count>0?prz.bk[1].each:second)+'</div><div class="label">2nd</div></div>' +
+    '<div class="prize-box"><div class="amount">$'+(prz.bk[2].count>0?prz.bk[2].each:third)+'</div><div class="label">3rd</div></div>' +
+    '</div>';
 
+  var alphaSt = sortAlpha(st);
+  var roundLabel = S.round > 0 ? 'Round ' + S.round : 'Pre-Tournament';
   var rows = '';
-  displaySt.forEach(function(e) {
-    var rnk = e.rank;
-    var trC = rnk===1?'row-rank-1':rnk===2?'row-rank-2':rnk===3?'row-rank-3':(!e.qualifies?'row-dnq':'');
-    var rb = rnk===1?'<span class="rank-badge rb-1">1</span>':rnk===2?'<span class="rank-badge rb-2">2</span>':rnk===3?'<span class="rank-badge rb-3">3</span>':rnk?'<span class="rb-n">'+rnk+'</span>':'<span class="rb-dnq">DNQ</span>';
-    var sc = e.qualifies&&e.totalScore!==null ? '<span class="score-chip '+(e.totalScore<0?'chip-under':e.totalScore>0?'chip-over':'chip-even')+'">'+fmtPar(e.totalScore)+'</span>' : '<span class="chip-dnq">DNQ</span>';
-    var pb = !e.payment_confirmed ? '<span class="pay-badge">Pending</span>' : '';
-    var b3n = (e.best3||[]).map(function(b) { return b.name; });
-    var picks = (e.players||[]).map(function(nm,idx) {
-      var r = e.results && e.results[idx];
-      if (!r) return '<span class="pick pick-unknown">'+nm+'</span>';
-      var iB = b3n.indexOf(nm) >= 0;
-      var cls = !r.found?'pick-unknown':!r.madeCut?'pick-cut':iB?'pick-counting':'pick-made';
-      var last = nm.split(' ').slice(-1)[0];
-      var sc2 = r.found ? ' <span class="pick-score">'+r.scoreDisp+'</span>' : '';
-      return '<span class="pick '+cls+'" title="'+nm+'">'+last+sc2+'</span>';
+  alphaSt.forEach(function(e) {
+    var rnk=e.rank;
+    var trC=rnk===1?'row-rank-1':rnk===2?'row-rank-2':rnk===3?'row-rank-3':(!e.qualifies?'row-dnq':'');
+    var rb=rnk===1?'<span class="rank-badge rb-1">1</span>':rnk===2?'<span class="rank-badge rb-2">2</span>':rnk===3?'<span class="rank-badge rb-3">3</span>':rnk?'<span class="rb-n">'+rnk+'</span>':'<span class="rb-dnq">DNQ</span>';
+    var sc=e.qualifies&&e.totalScore!==null?'<span class="score-chip '+(e.totalScore<0?'chip-under':e.totalScore>0?'chip-over':'chip-even')+'">'+fmtPar(e.totalScore)+'</span>':'<span class="chip-dnq">DNQ</span>';
+    var pb=!e.payment_confirmed?'<span class="pay-badge">Pending</span>':'';
+    var b3n=(e.best3||[]).map(function(b){return b.name;});
+    var picks=(e.players||[]).map(function(nm,idx){
+      var r=e.results&&e.results[idx]; if(!r)return'<span class="pick pick-unknown">'+nm+'</span>';
+      var iB=b3n.indexOf(nm)>=0; var cls=!r.found?'pick-unknown':!r.madeCut?'pick-cut':iB?'pick-counting':'pick-made';
+      var last=nm.split(' ').slice(-1)[0]; var sc2=r.found?' <span class="pick-score">'+r.scoreDisp+'</span>':'';
+      return'<span class="pick '+cls+'" title="'+nm+'">'+last+sc2+'</span>';
     }).join('');
-    var lbl = e.entry_label || e.participant_name;
-    var sub = (e.entry_label && e.entry_label !== e.participant_name) ? '<div class="entry-sub">'+e.participant_name+'</div>' : '';
-    var prizeCell = '';
-    if (showPrize) {
-      var pe = prz.bk.find(function(b) { return b.rank === rnk; });
-      prizeCell = '<td style="text-align:right;width:80px">' + (pe && e.payment_confirmed ? '<span class="prize-win">$'+pe.each+'</span>' : '—') + '</td>';
-    }
-    rows += '<tr class="'+trC+'"><td style="width:48px">'+rb+'</td><td><div class="entry-name">'+lbl+pb+'</div>'+sub+'</td><td style="width:80px">'+sc+'</td><td style="width:60px;color:var(--gray-400);font-size:.77rem">'+fmtPar(e.tiebreaker||0)+'</td><td><div class="picks-row">'+picks+'</div></td>'+prizeCell+'</tr>';
+    var pe=prz.bk.find(function(b){return b.rank===rnk;}); var pz=pe?'<span class="prize-win">$'+pe.each+'</span>':'—';
+    var lbl=e.entry_label||e.participant_name;
+    var sub=(e.entry_label&&e.entry_label!==e.participant_name)?'<div class="entry-sub">'+e.participant_name+'</div>':'';
+    rows+='<tr class="'+trC+'"><td style="width:48px">'+rb+'</td><td><div class="entry-name">'+lbl+pb+'</div>'+sub+'</td><td style="width:80px">'+sc+'</td><td style="width:60px;color:var(--gray-400);font-size:.77rem">'+fmtPar(e.tiebreaker||0)+'</td><td><div class="picks-row">'+picks+'</div></td><td style="text-align:right;width:80px">'+pz+'</td></tr>';
   });
 
-  var cutApplied = S.round>=3 || (S.round===2 && S.tStatus.toUpperCase().indexOf('FINAL')>=0);
-  var cutNote = !cutApplied && S.pgaPlayers.length ? '<div class="alert alert-info" style="margin-top:1rem">Cut not yet applied — standings preliminary until Round 2 complete Friday.</div>' : '';
-  var winRef = S.leaderScore !== null ? '<span style="color:var(--gray-400);font-size:.72rem">Leader: <strong style="color:var(--red)">'+fmtPar(S.leaderScore)+'</strong></span>' : '';
-  var prizeHeader = showPrize ? '<th style="text-align:right">Prize</th>' : '';
-
+  var cutApplied = S.round>=3||(S.round===2&&S.tStatus.toUpperCase().indexOf('FINAL')>=0);
+  var cutNote = !cutApplied&&S.pgaPlayers.length?'<div class="alert alert-info" style="margin-top:1rem">Cut not yet applied — standings preliminary until Round 2 complete Friday.</div>':'';
+  var winRef = S.leaderScore!==null?'<span style="color:var(--gray-400);font-size:.72rem">Leader: <strong style="color:var(--red)">'+fmtPar(S.leaderScore)+'</strong></span>':'';
   document.getElementById('standingsContent').innerHTML = podH + prizeH +
-    '<div class="card"><div class="card-header"><h3>Full Standings — '+entries.length+' entries · '+roundLabel+'</h3>'+winRef+'</div>' +
-    '<div style="overflow-x:auto"><table class="standings-table"><thead><tr><th>Rank</th><th>Entry</th><th>Score</th><th>TB</th><th>Picks</th>'+prizeHeader+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>'+cutNote;
+    '<div class="card"><div class="card-header"><h3>Full Standings — '+entries.length+' entries · '+roundLabel+' · Alphabetical</h3>'+winRef+'</div>' +
+    '<div style="overflow-x:auto"><table class="standings-table"><thead><tr><th>Rank</th><th>Entry</th><th>Score</th><th>TB</th><th>Picks</th><th style="text-align:right">Prize</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+cutNote;
 }
 
 // LEADERBOARD
 function renderLeaderboard() {
   var el = document.getElementById('leaderboardContent');
   if (S.pgaPlayers.length >= 20) {
-    var rnd = S.round > 0 ? 'Round ' + S.round : 'Pre-Tournament';
-    var upd = S.lastUpdated ? S.lastUpdated.toLocaleTimeString() : '';
-    var sorted = S.pgaPlayers.slice().sort(function(a,b) { return a.displayName.localeCompare(b.displayName,'en',{sensitivity:'base'}); });
-    var madeR = '', cutR = '';
-    sorted.forEach(function(p) {
-      var sc = p.score<0?'lb-under':p.score>0?'lb-over':'lb-even';
-      if (!p.madeCut) { cutR += '<tr class="lb-cut"><td>MC</td><td class="lb-name">'+p.displayName+'</td><td class="'+sc+'">'+fmtPar(p.score)+'</td><td style="font-size:.72rem;color:var(--gray-400)">Missed Cut</td></tr>'; }
-      else { madeR += '<tr><td>—</td><td class="lb-name">'+p.displayName+'</td><td class="'+sc+'">'+fmtPar(p.score)+'</td><td style="font-size:.72rem;color:var(--gray-400)">'+(p.detail||'')+'</td></tr>'; }
+    var rnd = S.round>0?'Round '+S.round:'Pre-Tournament';
+    var upd = S.lastUpdated?S.lastUpdated.toLocaleTimeString():'';
+    var sorted = S.pgaPlayers.slice().sort(function(a,b){return a.displayName.localeCompare(b.displayName);});
+    var madeR='',cutR='';
+    sorted.forEach(function(p){
+      var sc=p.score<0?'lb-under':p.score>0?'lb-over':'lb-even';
+      if(!p.madeCut){cutR+='<tr class="lb-cut"><td>MC</td><td class="lb-name">'+p.displayName+'</td><td class="'+sc+'">'+fmtPar(p.score)+'</td><td style="font-size:.72rem;color:var(--gray-400)">Missed Cut</td></tr>';}
+      else{madeR+='<tr><td>—</td><td class="lb-name">'+p.displayName+'</td><td class="'+sc+'">'+fmtPar(p.score)+'</td><td style="font-size:.72rem;color:var(--gray-400)">'+(p.detail||'')+'</td></tr>';}
     });
-    el.innerHTML = '<div class="card"><div class="card-header"><h3>2026 Masters — Live Scores</h3><span class="meta">'+rnd+' · '+upd+'</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>Status</th><th>Player</th><th>Score</th><th>Detail</th></tr></thead><tbody>'+madeR+(cutR?'<tr><td colspan="4" style="padding:.4rem 1.25rem;background:var(--gray-50);font-size:.68rem;font-weight:700;color:var(--gray-400);text-transform:uppercase">Missed Cut</td></tr>'+cutR:'')+'</tbody></table></div></div>';
+    el.innerHTML='<div class="card"><div class="card-header"><h3>2026 Masters — Live Scores</h3><span class="meta">'+rnd+' · '+upd+'</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>Status</th><th>Player</th><th>Score</th><th>Detail</th></tr></thead><tbody>'+madeR+(cutR?'<tr><td colspan="4" style="padding:.4rem 1.25rem;background:var(--gray-50);font-size:.68rem;font-weight:700;color:var(--gray-400);text-transform:uppercase">Missed Cut</td></tr>'+cutR:'')+'</tbody></table></div></div>';
     return;
   }
-  var rows = FIELD.map(function(name) { return '<tr><td>—</td><td class="lb-name">'+name+'</td><td class="lb-even">—</td><td style="font-size:.72rem;color:var(--gray-400)">Tournament starts Apr 9</td></tr>'; }).join('');
-  el.innerHTML = '<div class="alert alert-info" style="margin-bottom:1.25rem"><span>Calendar:</span><span> The 2026 Masters begins <strong>April 9</strong>. Scores update automatically once play begins.</span></div><div class="card"><div class="card-header"><h3>2026 Masters Field — '+FIELD.length+' Players</h3><span class="meta">Alphabetical</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>—</th><th>Player</th><th>Score</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  var rows = FIELD.map(function(name){return'<tr><td>—</td><td class="lb-name">'+name+'</td><td class="lb-even">—</td><td style="font-size:.72rem;color:var(--gray-400)">Tournament starts Apr 10</td></tr>';}).join('');
+  el.innerHTML='<div class="alert alert-info" style="margin-bottom:1.25rem"><span>&#128197;</span><span> The 2026 Masters begins <strong>April 10</strong>. Scores update automatically once play begins.</span></div><div class="card"><div class="card-header"><h3>2026 Masters Field — '+FIELD.length+' Players</h3><span class="meta">Alphabetical</span></div><div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>—</th><th>Player</th><th>Score</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 
 // FIELD ANALYSIS
@@ -795,33 +785,36 @@ async function renderField() {
   if (!canSeeStandings()) return;
   el.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
   var entries = await fetchEntries();
-  if (!entries.length) { el.innerHTML = '<div class="loading-state"><p>No entries yet</p></div>'; return; }
-  var totalE = entries.length;
-  var paidCount = entries.filter(function(e) { return e.payment_confirmed; }).length;
-  var pickMap = {};
-  entries.forEach(function(e) { (e.players||[]).forEach(function(p) { if(p) pickMap[p]=(pickMap[p]||0)+1; }); });
-  var ranked = Object.entries(pickMap).sort(function(a,b) { return b[1]-a[1]||a[0].localeCompare(b[0],'en',{sensitivity:'base'}); });
-  var maxCount = ranked[0] ? ranked[0][1] : 1;
-  var top10 = ranked.slice(0,10); var rest = ranked.slice(10);
-  var unpicked = FIELD.filter(function(p) { return !pickMap[p]; });
-  var chalk = ranked[0]; var darkHorse = ranked[ranked.length-1];
-  var avgTB = Math.round(entries.map(function(e) { return e.tiebreaker||0; }).reduce(function(a,b) { return a+b; },0)/totalE);
-  var banner = '<div style="background:linear-gradient(90deg,#14532d,#166534);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;color:#fff"><span style="font-size:1.2rem">&#127948;</span><span style="font-size:.83rem"><strong>Entries locked.</strong> '+totalE+' entries submitted. May the best picks win!</span></div>';
-  var heroHtml = '<div class="field-hero">' +
+  if (!entries.length) {
+    el.innerHTML = '<div class="loading-state"><p style="font-size:1rem;font-weight:600;margin-bottom:.5rem">No entries yet</p></div>';
+    return;
+  }
+  var totalE=entries.length;
+  var paidCount=entries.filter(function(e){return e.payment_confirmed;}).length;
+  var pickMap={};
+  entries.forEach(function(e){(e.players||[]).forEach(function(p){if(p)pickMap[p]=(pickMap[p]||0)+1;});});
+  var ranked=Object.entries(pickMap).sort(function(a,b){return b[1]-a[1]||a[0].localeCompare(b[0]);});
+  var maxCount=ranked[0]?ranked[0][1]:1;
+  var top10=ranked.slice(0,10); var rest=ranked.slice(10);
+  var unpicked=FIELD.filter(function(p){return!pickMap[p];});
+  var chalk=ranked[0]; var darkHorse=ranked[ranked.length-1];
+  var avgTB=Math.round(entries.map(function(e){return e.tiebreaker||0;}).reduce(function(a,b){return a+b;},0)/totalE);
+  var banner='<div style="background:linear-gradient(90deg,#14532d,#166534);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;color:#fff"><span style="font-size:1.2rem">&#127948;</span><span style="font-size:.83rem"><strong>Entries locked.</strong> '+totalE+' entries submitted. May the best picks win!</span></div>';
+  var heroHtml='<div class="field-hero">' +
     '<div class="field-stat"><div class="fs-lbl">Total entries</div><div class="fs-val">'+totalE+'</div><div class="fs-sub">$'+(paidCount*CFG.ENTRY_FEE)+' pool</div></div>' +
     '<div class="field-stat"><div class="fs-lbl">Most picked</div><div class="fs-val">'+(chalk?chalk[0].split(' ').slice(-1)[0]:'—')+'</div><div class="fs-sub">'+(chalk?chalk[1]+' entries ('+Math.round(chalk[1]/totalE*100)+'%)':'')+'</div></div>' +
     '<div class="field-stat"><div class="fs-lbl">Dark horse</div><div class="fs-val">'+(darkHorse?darkHorse[0].split(' ').slice(-1)[0]:'—')+'</div><div class="fs-sub">'+(darkHorse?'Only '+darkHorse[1]+' '+(darkHorse[1]===1?'entry':'entries'):'')+'</div></div>' +
     '<div class="field-stat"><div class="fs-lbl">Avg tiebreaker</div><div class="fs-val">'+fmtPar(avgTB)+'</div><div class="fs-sub">Across all entries</div></div>' +
     '</div>';
-  var rLbl = function(i) { return i===0?'1st · Most popular':i===1?'2nd':i===2?'3rd':'#'+(i+1); };
-  var rCls = function(i) { return i===0?'r1':i===1?'r2':i===2?'r3':''; };
-  var bCls = function(i) { return i===0?'gold':i===1?'silver':i===2?'bronze':''; };
-  var tCls = function(i) { return i===0?' gold':i===1?' silver':i===2?' bronze':''; };
-  var cardsHtml = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem"><p style="font-size:.9rem;font-weight:700;color:var(--gray-900)">Most Popular Picks</p><span style="font-size:.72rem;color:var(--gray-400)">'+totalE+' entries total</span></div>' +
-    '<div class="pop-grid">'+top10.map(function(item,i) {
-      var name=item[0]; var count=item[1]; var pct=Math.round(count/totalE*100);
-      var parts=name.split(' '); var last=parts.slice(-1)[0]; var first=parts.slice(0,-1).join(' ');
-      return '<div class="pop-card '+rCls(i)+'">' +
+  var rLbl=function(i){return i===0?'1st · Most popular':i===1?'2nd':i===2?'3rd':'#'+(i+1);};
+  var rCls=function(i){return i===0?'r1':i===1?'r2':i===2?'r3':'';};
+  var bCls=function(i){return i===0?'gold':i===1?'silver':i===2?'bronze':'';};
+  var tCls=function(i){return i===0?' gold':i===1?' silver':i===2?' bronze':'';};
+  var cardsHtml='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem"><p style="font-size:.9rem;font-weight:700;color:var(--gray-900)">Most Popular Picks</p><span style="font-size:.72rem;color:var(--gray-400)">'+totalE+' entries total</span></div>' +
+    '<div class="pop-grid">'+top10.map(function(item,i){
+      var name=item[0];var count=item[1];var pct=Math.round(count/totalE*100);
+      var parts=name.split(' ');var last=parts.slice(-1)[0];var first=parts.slice(0,-1).join(' ');
+      return'<div class="pop-card '+rCls(i)+'">' +
         '<div class="pop-rank'+tCls(i)+'">'+rLbl(i)+'</div>' +
         '<div><div class="pop-first">'+first+'</div><div class="pop-last">'+last+'</div></div>' +
         '<div class="pop-count">'+count+'<span> picks</span></div>' +
@@ -829,11 +822,11 @@ async function renderField() {
         '<div class="pop-bar-wrap"><div class="pop-bar '+bCls(i)+'" style="width:'+Math.round(count/maxCount*100)+'%"></div></div>' +
         '</div>';
     }).join('')+'</div>';
-  var compactHtml = rest.length ? '<div class="card" style="margin-bottom:1.25rem"><div class="card-header"><h3>The Rest of the Field</h3><span class="meta">'+rest.length+' players picked</span></div><div style="overflow-x:auto"><table class="compact-table"><thead><tr><th>#</th><th>Player</th><th>Picks</th><th>Ownership</th></tr></thead><tbody>'+
-    rest.map(function(item,i) { var name=item[0]; var count=item[1]; var pct=Math.round(count/totalE*100); return '<tr><td style="color:var(--gray-400);font-size:.75rem">#'+(i+11)+'</td><td style="font-weight:600">'+name+'</td><td>'+count+' '+(count===1?'entry':'entries')+'</td><td><span style="font-size:.8rem;font-weight:600;color:var(--gray-700)">'+pct+'%</span><span class="ibar"><span class="ibar-fill" style="width:'+Math.round(count/maxCount*100)+'%"></span></span></td></tr>'; }).join('') +
-    '</tbody></table></div></div>' : '';
-  var unpickedHtml = unpicked.length ? '<div class="card"><div class="card-header"><h3>Not Picked by Anyone</h3><span class="meta">'+unpicked.length+' players</span></div><div style="padding:.85rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem">'+unpicked.map(function(n) { return '<span class="tag">'+n+'</span>'; }).join('')+'</div></div>' : '';
-  el.innerHTML = banner + heroHtml + cardsHtml + compactHtml + unpickedHtml;
+  var compactHtml=rest.length?'<div class="card" style="margin-bottom:1.25rem"><div class="card-header"><h3>The Rest of the Field</h3><span class="meta">'+rest.length+' players picked</span></div><div style="overflow-x:auto"><table class="compact-table"><thead><tr><th>#</th><th>Player</th><th>Picks</th><th>Ownership</th></tr></thead><tbody>'+
+    rest.map(function(item,i){var name=item[0];var count=item[1];var pct=Math.round(count/totalE*100);return'<tr><td style="color:var(--gray-400);font-size:.75rem">#'+(i+11)+'</td><td style="font-weight:600">'+name+'</td><td>'+count+' '+(count===1?'entry':'entries')+'</td><td><span style="font-size:.8rem;font-weight:600;color:var(--gray-700)">'+pct+'%</span><span class="ibar"><span class="ibar-fill" style="width:'+Math.round(count/maxCount*100)+'%"></span></span></td></tr>';}).join('') +
+    '</tbody></table></div></div>':'';
+  var unpickedHtml=unpicked.length?'<div class="card"><div class="card-header"><h3>Not Picked by Anyone</h3><span class="meta">'+unpicked.length+' players</span></div><div style="padding:.85rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem">'+unpicked.map(function(n){return'<span class="tag">'+n+'</span>';}).join('')+'</div></div>':'';
+  el.innerHTML=banner+heroHtml+cardsHtml+compactHtml+unpickedHtml;
 }
 
 // EXPORT CSV
@@ -849,7 +842,7 @@ function exportCSV() {
       e.alternate||'', e.tiebreaker||0,
       e.payment_confirmed?'Paid':'Pending',
       new Date(e.submitted_at).toLocaleDateString()
-    ].map(function(v) { return '"'+String(v).replace(/"/g,'""')+'"'; }).join(',');
+    ].map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');
   });
   var csv = [headers.join(',')].concat(rows).join('\n');
   var blob = new Blob([csv],{type:'text/csv'});
@@ -859,7 +852,7 @@ function exportCSV() {
 // ADMIN
 function adminLogin() {
   if (document.getElementById('adminPwd').value === CFG.ADMIN_PWD) {
-    S.adminIn = true;
+    S.adminIn=true;
     document.getElementById('adminLogin').classList.add('hidden');
     document.getElementById('adminPanel').classList.remove('hidden');
     renderAdmin();
@@ -867,13 +860,13 @@ function adminLogin() {
 }
 async function renderAdmin() {
   closeEdit();
-  document.getElementById('adminContent').innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
-  var entries = await fetchEntries(); S.liveEntries = entries;
-  var paidCount = entries.filter(function(e) { return e.payment_confirmed; }).length;
-  document.getElementById('adminConnStatus').innerHTML = S.sbConnected ? '<span class="conn-dot"></span>Supabase connected' : '<span class="conn-dot off"></span>Not connected';
-  var sorted = sortAlpha(entries);
-  var rows = sorted.map(function(e) {
-    return '<tr>' +
+  document.getElementById('adminContent').innerHTML='<div class="loading-state"><div class="spinner"></div></div>';
+  var entries=await fetchEntries(); S.liveEntries=entries;
+  var paidCount=entries.filter(function(e){return e.payment_confirmed;}).length;
+  document.getElementById('adminConnStatus').innerHTML=S.sbConnected?'<span class="conn-dot"></span>Supabase connected':'<span class="conn-dot off"></span>Not connected';
+  var sorted=sortAlpha(entries);
+  var rows=sorted.map(function(e){
+    return'<tr>' +
       '<td><div style="font-weight:600;font-size:.8rem">'+(e.entry_label||e.participant_name)+'</div><div style="color:var(--gray-400);font-size:.7rem">'+e.participant_name+'</div></td>' +
       '<td style="color:var(--gray-500);font-size:.75rem">'+e.email+'</td>' +
       '<td style="max-width:200px;font-size:.72rem;color:var(--gray-700);line-height:1.4">'+(e.players||[]).join(', ')+'<br><span style="color:var(--gray-400)">Alt: '+(e.alternate||'—')+' · TB: '+fmtPar(e.tiebreaker||0)+'</span></td>' +
@@ -884,25 +877,25 @@ async function renderAdmin() {
         '<button class="btn btn-sm '+(e.payment_confirmed?'btn-ghost':'btn-success')+'" onclick="togglePay(\''+e.id+'\','+!e.payment_confirmed+')">'+(e.payment_confirmed?'Undo':'Paid')+'</button>' +
         '<button class="btn btn-sm btn-danger" onclick="delEntry(\''+e.id+'\')" style="margin-left:4px">Delete</button>' +
       '</td></tr>';
-  }).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400)">No entries yet.</td></tr>';
-  document.getElementById('adminContent').innerHTML =
+  }).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400)">No entries yet.</td></tr>';
+  document.getElementById('adminContent').innerHTML=
     '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">' +
       '<div style="font-size:.83rem;color:var(--gray-700)"><strong>'+entries.length+'</strong> entries · <strong>'+paidCount+'</strong> paid · Pool: <strong style="color:var(--green)">$'+(paidCount*CFG.ENTRY_FEE)+'</strong></div>' +
       '<div style="display:flex;gap:.5rem">' +
-        '<button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="exportCSV()">&#8595; Export CSV</button>' +
         '<button class="btn btn-ghost btn-sm" onclick="renderAdmin()">Refresh</button>' +
       '</div>' +
     '</div>' +
     '<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Entry</th><th>Email</th><th>Picks</th><th>Submitted</th><th>Payment</th><th>Actions</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function openEdit(id) {
-  var e = S.liveEntries.find(function(x) { return x.id === id; }); if (!e) return;
-  var pickSelects = [1,2,3,4,5].map(function(i) {
-    var cur = e.players && e.players[i-1] || '';
-    return '<div class="form-group"><label class="form-label">Pick '+i+'</label><select class="form-select" id="ep_'+i+'"><option value="">Select...</option>'+FIELD.map(function(n) { return '<option value="'+n+'"'+(n===cur?' selected':'')+'>'+n+'</option>'; }).join('')+'</select></div>';
+  var e=S.liveEntries.find(function(x){return x.id===id;}); if(!e)return;
+  var pickSelects=[1,2,3,4,5].map(function(i){
+    var cur=e.players&&e.players[i-1]||'';
+    return'<div class="form-group"><label class="form-label">Pick '+i+'</label><select class="form-select" id="ep_'+i+'"><option value="">Select...</option>'+FIELD.map(function(n){return'<option value="'+n+'"'+(n===cur?' selected':'')+'>'+n+'</option>';}).join('')+'</select></div>';
   }).join('');
-  var altOpts = '<option value="">None</option>'+FIELD.map(function(n) { return '<option value="'+n+'"'+(n===e.alternate?' selected':'')+'>'+n+'</option>'; }).join('');
-  document.getElementById('editBody').innerHTML =
+  var altOpts='<option value="">None</option>'+FIELD.map(function(n){return'<option value="'+n+'"'+(n===e.alternate?' selected':'')+'>'+n+'</option>';}).join('');
+  document.getElementById('editBody').innerHTML=
     '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:.75rem">' +
       '<div class="form-group"><label class="form-label">Entry Label</label><input type="text" class="form-control" id="ep_label" value="'+(e.entry_label||'')+'"></div>' +
       '<div class="form-group"><label class="form-label">Name</label><input type="text" class="form-control" id="ep_name" value="'+(e.participant_name||'')+'"></div>' +
@@ -918,64 +911,64 @@ function openEdit(id) {
       '<button class="btn btn-ghost" onclick="closeEdit()">Cancel</button>' +
     '</div>' +
     '<div id="editError" class="alert alert-error hidden" style="margin-top:.75rem"></div>';
-  var sec = document.getElementById('editSection'); sec.classList.remove('hidden');
-  sec.scrollIntoView({behavior:'smooth', block:'start'});
+  var sec=document.getElementById('editSection'); sec.classList.remove('hidden');
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
 }
-function closeEdit() { document.getElementById('editSection').classList.add('hidden'); document.getElementById('editBody').innerHTML = ''; }
-async function saveEdit(id) {
-  var players = [];
-  for (var i = 1; i <= 5; i++) { var v = document.getElementById('ep_'+i); if (v && v.value) players.push(v.value); }
-  if (players.length < 3) { alert('Need at least 3 picks.'); return; }
-  if (new Set(players).size !== players.length) { alert('Duplicate picks.'); return; }
-  var tb = parseInt(document.getElementById('ep_tb').value, 10);
-  if (isNaN(tb)) { alert('Invalid tiebreaker.'); return; }
-  var patch = { participant_name:document.getElementById('ep_name').value.trim(), entry_label:document.getElementById('ep_label').value.trim(), email:document.getElementById('ep_email').value.trim(), players:players, alternate:document.getElementById('ep_alt').value, tiebreaker:tb };
-  try { await updateEntry(id, patch); closeEdit(); renderAdmin(); }
-  catch(e) { var el = document.getElementById('editError'); el.textContent = 'Error: '+e.message; el.classList.remove('hidden'); }
+function closeEdit(){document.getElementById('editSection').classList.add('hidden');document.getElementById('editBody').innerHTML='';}
+async function saveEdit(id){
+  var players=[];
+  for(var i=1;i<=5;i++){var v=document.getElementById('ep_'+i);if(v&&v.value)players.push(v.value);}
+  if(players.length<3){alert('Need at least 3 picks.');return;}
+  if(new Set(players).size!==players.length){alert('Duplicate picks.');return;}
+  var tb=parseInt(document.getElementById('ep_tb').value,10);
+  if(isNaN(tb)){alert('Invalid tiebreaker.');return;}
+  var patch={participant_name:document.getElementById('ep_name').value.trim(),entry_label:document.getElementById('ep_label').value.trim(),email:document.getElementById('ep_email').value.trim(),players:players,alternate:document.getElementById('ep_alt').value,tiebreaker:tb};
+  try{await updateEntry(id,patch);closeEdit();renderAdmin();}
+  catch(e){var el=document.getElementById('editError');el.textContent='Error: '+e.message;el.classList.remove('hidden');}
 }
-async function togglePay(id, val) { try { await updateEntry(id, {payment_confirmed:val}); } catch(e) { alert('Error: '+e.message); return; } renderAdmin(); }
-async function delEntry(id) { if (!confirm('Delete this entry?')) return; try { await deleteEntry(id); } catch(e) { alert('Error: '+e.message); return; } renderAdmin(); }
+async function togglePay(id,val){try{await updateEntry(id,{payment_confirmed:val});}catch(e){alert('Error: '+e.message);return;}renderAdmin();}
+async function delEntry(id){if(!confirm('Delete this entry?'))return;try{await deleteEntry(id);}catch(e){alert('Error: '+e.message);return;}renderAdmin();}
 
 // NAV
 function showTab(tab) {
-  TABS.forEach(function(t) { var p = document.getElementById('tab-'+t); if(p) p.classList.remove('active'); });
-  document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
-  var pane = document.getElementById('tab-'+tab); if(pane) pane.classList.add('active');
-  var btn = document.querySelector('.nav-btn[data-tab="'+tab+'"]'); if(btn) btn.classList.add('active');
-  if (tab==='standings') renderStandings();
-  if (tab==='leaderboard') renderLeaderboard();
-  if (tab==='field') renderField();
-  if (tab==='enter') renderEntryForm();
-  if (tab==='admin' && S.adminIn) renderAdmin();
+  TABS.forEach(function(t){var p=document.getElementById('tab-'+t);if(p)p.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  var pane=document.getElementById('tab-'+tab); if(pane)pane.classList.add('active');
+  var btn=document.querySelector('.nav-btn[data-tab="'+tab+'"]'); if(btn)btn.classList.add('active');
+  if(tab==='standings')renderStandings();
+  if(tab==='leaderboard')renderLeaderboard();
+  if(tab==='field')renderField();
+  if(tab==='enter')renderEntryForm();
+  if(tab==='admin'&&S.adminIn)renderAdmin();
 }
-function updateStatusBar() {
-  document.getElementById('statusDot').className = S.pgaPlayers.length ? 'dot dot-live' : 'dot dot-off';
-  document.getElementById('statusText').textContent = S.pgaPlayers.length ? S.tName+' — Round '+S.round : 'Awaiting tournament data';
-  document.getElementById('topBarInfo').textContent = S.sbConnected ? 'DB connected · '+S.pgaPlayers.length+' players loaded' : 'Connecting...';
+function updateStatusBar(){
+  document.getElementById('statusDot').className=S.pgaPlayers.length?'dot dot-live':'dot dot-off';
+  document.getElementById('statusText').textContent=S.pgaPlayers.length?S.tName+' — Round '+S.round:'Awaiting tournament data';
+  document.getElementById('topBarInfo').textContent=S.sbConnected?'DB connected · '+S.pgaPlayers.length+' players loaded':'Connecting...';
 }
-async function refreshAll() {
-  var btn = document.getElementById('refreshBtn'); btn.textContent = 'Refreshing...'; btn.disabled = true;
-  try { await fetchESPN(); } catch(_) {}
+async function refreshAll(){
+  var btn=document.getElementById('refreshBtn');btn.textContent='Refreshing...';btn.disabled=true;
+  try{await fetchESPN();}catch(_){}
   updateStatusBar();
-  btn.textContent = 'Refresh'; btn.disabled = false;
-  var active = document.querySelector('.nav-btn.active');
-  if (active) { var tab = active.getAttribute('data-tab'); if(tab) showTab(tab); }
+  btn.textContent='Refresh';btn.disabled=false;
+  var active=document.querySelector('.nav-btn.active');
+  if(active){var tab=active.getAttribute('data-tab');if(tab)showTab(tab);}
 }
-async function init() {
-  try { await fetchEntries(); } catch(_) {}
+async function init(){
+  try{await fetchEntries();}catch(_){}
   updateStatusBar();
   showTab('rules');
   renderEntryForm();
-  try { fetchESPN(); } catch(_) {}
-  setInterval(async function() {
-    try { await fetchESPN(); } catch(_) {}
-    var active = document.querySelector('.nav-btn.active');
-    if (active) {
-      var tab = active.getAttribute('data-tab');
-      if (tab==='standings') renderStandings();
-      if (tab==='leaderboard') renderLeaderboard();
+  try{fetchESPN();}catch(_){}
+  setInterval(async function(){
+    try{await fetchESPN();}catch(_){}
+    var active=document.querySelector('.nav-btn.active');
+    if(active){
+      var tab=active.getAttribute('data-tab');
+      if(tab==='standings')renderStandings();
+      if(tab==='leaderboard')renderLeaderboard();
     }
-  }, 5*60*1000);
+  },5*60*1000);
 }
 init();
 </script>
