@@ -538,7 +538,7 @@ function scoreEntry(entry){
   var best3 = sorted.slice(0,3);
   return {results:results,totalScore:best3.reduce(function(s,r){ return s+r.score; },0),qualifies:true,best3:best3};
 }
-function calcStandings(entries){
+function calcStandings(entries, isFinal){
   var rows = entries.map(function(e){
     var sc = scoreEntry(e);
     var tbDiff = S.leaderScore!==null?Math.abs((e.tiebreaker||0)-S.leaderScore):9999;
