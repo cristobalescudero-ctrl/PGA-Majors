@@ -483,10 +483,13 @@ async function fetchESPN(){
     }
     if(!data||!data.data||!data.data.player) return false;
     var d = data.data;
-    var roundNum = parseInt(d.currentRound)||1;
+    var statusRound = d.statusRound||'';
+    // statusRound is like "PNNN" = round 1 in progress, "FPNN" = round 2, etc.
+    // Count F's + 1 for current round in progress
+    var roundInProgress = (statusRound.indexOf('P') >= 0) ? statusRound.indexOf('P') + 1 : 4;
     S.tName = 'Masters Tournament';
-    S.tStatus = d.statusRound||'';
-    S.round = roundNum > 4 ? 4 : roundNum;
+    S.tStatus = statusRound;
+    S.round = roundInProgress;
     S.pgaPlayers = d.player.map(function(p){
       var topar = p.topar||'0';
       var score = topar==='E'||topar===''?0:parseInt(topar)||0;
