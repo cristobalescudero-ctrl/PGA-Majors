@@ -566,23 +566,32 @@ function calcStandings(entries){
     return 0;
   });
 
-  // Assign ranks: ties share same rank during tournament, TB separates at final
-  var rc = 1;
+  // Assign ranks using position-based counter so ties don't swallow subsequent ranks.
+  // e.g. 1 entry at rank 1, 10 tied at rank 2 → next rank is 3 (not 12).
+  var qualPos = 0; // position among qualifying entries only (1-based)
   rows.forEach(function(e,i,arr){
     if(!e.qualifies){ e.rank=null; return; }
-    if(i>0&&arr[i-1].qualifies){
-      var sameScore = e.totalScore===arr[i-1].totalScore;
-      // At final: also need same tbDiff to share rank; during tournament: same score = same rank
-      var sameTB = final ? (e.tbDiff===arr[i-1].tbDiff) : true;
-      if(sameScore&&sameTB){
-        e.rank = arr[i-1].rank;
-      } else {
-        e.rank = rc;
-      }
+    qualPos++;
+    if(qualPos===1){
+      e.rank = 1;
     } else {
-      e.rank = rc;
+      var prev = arr[i-1];
+      // walk back to find last qualifying entry
+      var pi = i-1;
+      while(pi>=0 && !arr[pi].qualifies) pi--;
+      var prevQ = pi>=0 ? arr[pi] : null;
+      if(prevQ){
+        var sameScore = e.totalScore===prevQ.totalScore;
+        var sameTB = final ? (e.tbDiff===prevQ.tbDiff) : true;
+        if(sameScore&&sameTB){
+          e.rank = prevQ.rank; // share rank
+        } else {
+          e.rank = qualPos; // position-based, not rc++
+        }
+      } else {
+        e.rank = qualPos;
+      }
     }
-    rc++;
   });
   return rows;
 }
