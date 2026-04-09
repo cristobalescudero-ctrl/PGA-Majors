@@ -381,7 +381,7 @@ var CFG = { ADMIN_PWD:'HOLT2026!', ENTRY_FEE:25, SPLITS:[0.70,0.20,0.10] };
 var SB_URL = 'https://atkdzfhoadnoyhbyxwwp.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0a2R6ZmhvYWRub3loYnl4d3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MDIsImV4cCI6MjA5MDMxMDUwMn0.jbMKkE1aurjalbLSkIvP2t4QBdGHrJCT2eBmLyR4xVk';
 var DB_TABLE = 'entries_masters2026';
-var ESPN_URL = 'https://www.masters.com/en_US/scores/feeds/2026/scores.json';
+var MASTERS_URL = 'https://www.masters.com/en_US/scores/feeds/2026/scores.json';
 var PROXY = 'https://api.allorigins.win/get?url=';
 var DEADLINE = new Date(2026, 3, 9, 8, 0, 0);
 var TABS = ['rules','enter','leaderboard','standings','field','admin'];
@@ -415,7 +415,7 @@ var S = {
 
 function isUnlocked(){ return new Date() >= DEADLINE; }
 function canSeeStandings(){ return isUnlocked() || S.adminIn; }
-function isTournamentFinal(){ return S.round >= 4 && (S.tStatus.toUpperCase().indexOf('FINAL') >= 0 || S.tStatus === 'FFFF'); }
+function isTournamentFinal(){ return S.tStatus === 'FFFF'; }
 function pad2(n){ return String(Math.floor(n)).padStart(2,'0'); }
 function parsePar(s){
   if(!s && s!==0) return 0;
@@ -477,27 +477,25 @@ async function deleteEntry(id){ return sbFetch(DB_TABLE+'?id=eq.'+id,{method:'DE
 async function fetchESPN(){
   try{
     var data = null;
-    try{ var r=await fetch(ESPN_URL); if(r.ok) data=await r.json(); } catch(_){}
+    try{ var r=await fetch(MASTERS_URL); if(r.ok) data=await r.json(); } catch(_){}
     if(!data){
-      try{ var r2=await fetch(PROXY+encodeURIComponent(ESPN_URL)); if(r2.ok){ var w=await r2.json(); data=JSON.parse(w.contents); } } catch(_){}
+      try{ var r2=await fetch(PROXY+encodeURIComponent(MASTERS_URL)); if(r2.ok){ var w=await r2.json(); data=JSON.parse(w.contents); } } catch(_){}
     }
     if(!data||!data.data||!data.data.player) return false;
     var d = data.data;
     var statusRound = d.statusRound||'';
-    // statusRound is like "PNNN" = round 1 in progress, "FPNN" = round 2, etc.
-    // Count F's + 1 for current round in progress
-    var roundInProgress = (statusRound.indexOf('P') >= 0) ? statusRound.indexOf('P') + 1 : 4;
+    var roundInProgress = statusRound.indexOf('P')>=0 ? statusRound.indexOf('P')+1 : 4;
     S.tName = 'Masters Tournament';
     S.tStatus = statusRound;
     S.round = roundInProgress;
     S.pgaPlayers = d.player.map(function(p){
       var topar = p.topar||'0';
-      var score = topar==='E'||topar===''?0:parseInt(topar)||0;
+      var score = (topar==='E'||topar==='')?0:parseInt(topar)||0;
       var missed = p.status==='C'||p.newStatus==='C'||p.status==='WD';
       var thru = p.thru||'';
-      var detail = thru ? 'Thru '+thru : (p.teetime||'');
+      var detail = thru?'Thru '+thru:(p.teetime||'');
       return {
-        displayName: p.full_name||p.display_name||'',
+        displayName: p.full_name||p.display_name2||p.display_name||'',
         score: score,
         scoreDisp: score===0?'E':score>0?'+'+score:String(score),
         madeCut: !missed,
@@ -529,7 +527,7 @@ function scoreEntry(entry){
     var p = findPlayer(name);
     return {name:name,found:!!p,score:p?p.score:null,madeCut:p?p.madeCut:true,scoreDisp:p?p.scoreDisp:'--'};
   });
-  var cutApplied = S.round>=3||(S.round===2&&S.tStatus.toUpperCase().indexOf('FINAL')>=0);
+  var cutApplied = S.round>=3;
   var eligible = cutApplied
     ?results.filter(function(r){ return r.found&&r.madeCut; })
     :results.filter(function(r){ return r.found; });
@@ -538,35 +536,60 @@ function scoreEntry(entry){
   var best3 = sorted.slice(0,3);
   return {results:results,totalScore:best3.reduce(function(s,r){ return s+r.score; },0),qualifies:true,best3:best3};
 }
-function calcStandings(entries, isFinal){
+
+// ── STANDINGS RANKING ──────────────────────────────────────────────
+// During tournament: rank by score only, ties share same rank, NO tiebreaker
+// At FFFF final: tiebreaker breaks ties
+function calcStandings(entries){
+  var final = isTournamentFinal();
   var rows = entries.map(function(e){
     var sc = scoreEntry(e);
     var tbDiff = S.leaderScore!==null?Math.abs((e.tiebreaker||0)-S.leaderScore):9999;
     return Object.assign({},e,sc,{tbDiff:tbDiff});
-  }).sort(function(a,b){
+  });
+  // Sort: score first, tiebreaker only at final
+  rows.sort(function(a,b){
     if(a.qualifies&&!b.qualifies) return -1;
     if(!a.qualifies&&b.qualifies) return 1;
     if(!a.qualifies&&!b.qualifies) return 0;
     if(a.totalScore!==b.totalScore) return a.totalScore-b.totalScore;
-    return a.tbDiff-b.tbDiff;
+    if(final) return a.tbDiff-b.tbDiff;
+    return 0;
   });
+  // Assign ranks: ties share same rank during tournament, tiebreaker separates at final
   var rc = 1;
   rows.forEach(function(e,i,arr){
     if(!e.qualifies){ e.rank=null; return; }
-    if(i>0&&arr[i-1].qualifies&&e.totalScore===arr[i-1].totalScore&&e.tbDiff===arr[i-1].tbDiff){
-      e.rank=arr[i-1].rank;
-    } else { e.rank=rc; }
+    if(i>0&&arr[i-1].qualifies){
+      var sameScore = e.totalScore===arr[i-1].totalScore;
+      var sameTB = e.tbDiff===arr[i-1].tbDiff;
+      if(sameScore && (!final || sameTB)){
+        e.rank = arr[i-1].rank;
+      } else {
+        e.rank = rc;
+      }
+    } else {
+      e.rank = rc;
+    }
     rc++;
   });
   return rows;
 }
+
+// Prizes: fixed 70/20/10 during tournament, assigned to rank winners at final
 function calcPrizes(st,entries){
   var confirmed = entries.filter(function(e){ return e.payment_confirmed; }).length;
   var total = confirmed*CFG.ENTRY_FEE;
+  var final = isTournamentFinal();
   var bk = CFG.SPLITS.map(function(pct,i){
-    var r=i+1; var tied=st.filter(function(s){ return s.rank===r; });
-    var gross=Math.floor(total*pct); var each=tied.length>0?Math.floor(gross/tied.length):gross;
-    return {rank:r,gross:gross,each:each,count:tied.length};
+    var r = i+1;
+    var gross = Math.floor(total*pct);
+    if(final){
+      var tied = st.filter(function(s){ return s.rank===r; });
+      var each = tied.length>0?Math.floor(gross/tied.length):gross;
+      return {rank:r,gross:gross,each:each,count:tied.length};
+    }
+    return {rank:r,gross:gross,each:gross,count:0};
   });
   return {total:total,bk:bk};
 }
@@ -681,21 +704,18 @@ function buildLockedStandings(entries){
   var total=paidCount*CFG.ENTRY_FEE;
   var first=Math.floor(total*0.70); var second=Math.floor(total*0.20); var third=Math.floor(total*0.10);
   var diff=DEADLINE-new Date(); if(diff<0) diff=0;
-  var h='<div class="card">';
-  h+='<div class="card-header"><h3>Standings</h3><span class="meta">Unlocks Thu Apr 9 at 8:00 AM EST</span></div>';
+  var h='<div class="card"><div class="card-header"><h3>Standings</h3><span class="meta">Unlocks Thu Apr 9 at 8:00 AM EST</span></div>';
   h+='<div style="padding:2.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">';
   h+='<p style="font-size:1.05rem;font-weight:700;color:var(--gray-900)">Picks are sealed until Thursday</p>';
   h+='<p style="font-size:.83rem;color:var(--gray-500);line-height:1.6;max-width:320px">Standings and picks will be revealed when the first player tees off.</p>';
   h+='<div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">';
   h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.85rem 1.5rem;text-align:center"><div style="font-size:1.8rem;font-weight:700">'+entries.length+'</div><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">Entries</div></div>';
-  h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.85rem 1.5rem;text-align:center"><div style="font-size:1.8rem;font-weight:700">'+paidCount+'</div><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">Paid</div></div>';
-  h+='</div>';
+  h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.85rem 1.5rem;text-align:center"><div style="font-size:1.8rem;font-weight:700">'+paidCount+'</div><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">Paid</div></div></div>';
   h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:400px">';
   h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.6rem .75rem;text-align:center"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">Pool</div><div style="font-size:1rem;font-weight:700">$'+total+'</div></div>';
   h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.6rem .75rem;text-align:center"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">1st</div><div style="font-size:1rem;font-weight:700;color:var(--green)">$'+first+'</div></div>';
   h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.6rem .75rem;text-align:center"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">2nd</div><div style="font-size:1rem;font-weight:700;color:var(--green)">$'+second+'</div></div>';
-  h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.6rem .75rem;text-align:center"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">3rd</div><div style="font-size:1rem;font-weight:700;color:var(--green)">$'+third+'</div></div>';
-  h+='</div>';
+  h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.6rem .75rem;text-align:center"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--gray-400)">3rd</div><div style="font-size:1rem;font-weight:700;color:var(--green)">$'+third+'</div></div></div>';
   h+='<div style="display:flex;gap:8px;justify-content:center">';
   h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.5rem .85rem;text-align:center"><div style="font-size:1.3rem;font-weight:700" id="cdD">'+pad2(Math.floor(diff/86400000))+'</div><div style="font-size:.65rem;text-transform:uppercase;color:var(--gray-400)">Days</div></div>';
   h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-sm);padding:.5rem .85rem;text-align:center"><div style="font-size:1.3rem;font-weight:700" id="cdH">'+pad2(Math.floor((diff%86400000)/3600000))+'</div><div style="font-size:.65rem;text-transform:uppercase;color:var(--gray-400)">Hrs</div></div>';
@@ -713,7 +733,7 @@ async function renderStandings(){
   var entries=await fetchEntries();
   var paidCount=entries.filter(function(e){ return e.payment_confirmed; }).length;
   var total=paidCount*CFG.ENTRY_FEE;
-  var first=Math.floor(total*0.70); var second=Math.floor(total*0.20); var third=Math.floor(total*0.10);
+  var first=Math.floor(total*0.70);
   document.getElementById('poolTotal').textContent='$'+total;
   document.getElementById('firstPrize').textContent='$'+first;
 
@@ -735,14 +755,15 @@ async function renderStandings(){
     return;
   }
 
-  var hasScores=S.pgaPlayers.length>0;
-  var isFinal=isTournamentFinal();
-  var st=calcStandings(entries);
-  var prz=calcPrizes(st,entries);
-  document.getElementById('poolTotal').textContent='$'+prz.total;
-  document.getElementById('firstPrize').textContent='$'+(prz.bk[0].count>0?prz.bk[0].each:first);
+  var hasScores = S.pgaPlayers.length>0 && S.pgaPlayers.some(function(p){ return p.score!==0; });
+  var isFinal = isTournamentFinal();
+  var st = calcStandings(entries);
+  var prz = calcPrizes(st,entries);
 
-  // Podium -- final day only
+  document.getElementById('poolTotal').textContent='$'+prz.total;
+  document.getElementById('firstPrize').textContent='$'+prz.bk[0].each;
+
+  // Podium -- final only
   var podH='';
   if(isFinal){
     var pod=[1,2,3].map(function(r){ return st.find(function(s){ return s.rank===r; }); });
@@ -764,30 +785,30 @@ async function renderStandings(){
     podH+='</div>';
   }
 
-  // Prize grid -- final day only
-  var pc=entries.filter(function(e){ return e.payment_confirmed; }).length;
+  // Prize grid -- final only
   var prizeH='';
   if(isFinal){
+    var pc=entries.filter(function(e){ return e.payment_confirmed; }).length;
     prizeH='<div class="prize-grid">'
       +'<div class="prize-box total"><div class="amount">$'+prz.total+'</div><div class="label">'+pc+' paid</div></div>'
-      +'<div class="prize-box"><div class="amount">$'+(prz.bk[0].count>0?prz.bk[0].each:first)+'</div><div class="label">1st</div></div>'
-      +'<div class="prize-box"><div class="amount">$'+(prz.bk[1].count>0?prz.bk[1].each:second)+'</div><div class="label">2nd</div></div>'
-      +'<div class="prize-box"><div class="amount">$'+(prz.bk[2].count>0?prz.bk[2].each:third)+'</div><div class="label">3rd</div></div>'
+      +'<div class="prize-box"><div class="amount">$'+prz.bk[0].each+'</div><div class="label">1st</div></div>'
+      +'<div class="prize-box"><div class="amount">$'+prz.bk[1].each+'</div><div class="label">2nd</div></div>'
+      +'<div class="prize-box"><div class="amount">$'+prz.bk[2].each+'</div><div class="label">3rd</div></div>'
       +'</div>';
   }
 
-  // Pre-tournament = alphabetical. Tournament started = by score/rank.
+  // Sort display: alphabetical pre-tournament, by score during
   var displaySt;
   if(hasScores){
-    displaySt=st.slice();
+    displaySt = st.slice();
   } else {
-    displaySt=sortAlpha(entries).map(function(e){
+    displaySt = sortAlpha(entries).map(function(e){
       return Object.assign({},e,{rank:null,qualifies:false,totalScore:null,results:[],best3:[],tbDiff:9999});
     });
   }
 
-  var roundLabel=S.round>0?'Round '+S.round:'Pre-Tournament';
-  var sortLabel=hasScores?'By Score':'Alphabetical';
+  var roundLabel = S.round>0?'Round '+S.round:'Pre-Tournament';
+  var sortLabel = hasScores?'By Score':'Alphabetical';
   var rows='';
 
   displaySt.forEach(function(e){
@@ -832,8 +853,7 @@ async function renderStandings(){
       +'</tr>';
   });
 
-  var cutApplied=S.round>=3||(S.round===2&&S.tStatus.toUpperCase().indexOf('FINAL')>=0);
-  var cutNote=!cutApplied&&hasScores?'<div class="alert alert-info" style="margin-top:1rem">Cut not yet applied -- standings preliminary until Round 2 complete Friday.</div>':'';
+  var cutNote=S.round<3&&hasScores?'<div class="alert alert-info" style="margin-top:1rem">Cut not yet applied -- standings preliminary until Round 2 complete Friday.</div>':'';
   var winRef=S.leaderScore!==null?'<span style="color:var(--gray-400);font-size:.72rem">Leader: <strong style="color:var(--red)">'+fmtPar(S.leaderScore)+'</strong></span>':'';
   var thPrize=isFinal?'<th style="text-align:right">Prize</th>':'';
 
@@ -1029,12 +1049,9 @@ async function renderAdmin(){
     +'<div style="display:flex;gap:.5rem;flex-wrap:wrap">'
       +'<button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>'
       +'<button class="btn btn-ghost btn-sm" onclick="renderAdmin()">Refresh</button>'
-    +'<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">'
-      +'<button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>'
-      +'<button class="btn btn-ghost btn-sm" onclick="renderAdmin()">Refresh</button>'
       +'<button class="btn btn-sm" onclick="togglePanic()" style="'+panicStyle+'" title="Hides the site for all users. Click the flag 3x on the overlay to restore.">'+panicLabel+'</button>'
     +'</div>'
-    +'<div style="font-size:.72rem;color:#78350f;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);padding:.4rem .85rem;margin-top:.5rem;">'
+    +'<div style="font-size:.72rem;color:#78350f;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);padding:.4rem .85rem;margin-top:.5rem;width:100%;">'
     +'<strong>Ruling Committee Mode:</strong> Hides the site for all users. To restore, click the flag 3x on the screen.'
     +'</div>'
     +'</div>'
