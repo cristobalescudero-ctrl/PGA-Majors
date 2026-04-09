@@ -381,7 +381,7 @@ var CFG = { ADMIN_PWD:'HOLT2026!', ENTRY_FEE:25, SPLITS:[0.70,0.20,0.10] };
 var SB_URL = 'https://atkdzfhoadnoyhbyxwwp.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0a2R6ZmhvYWRub3loYnl4d3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzQ1MDIsImV4cCI6MjA5MDMxMDUwMn0.jbMKkE1aurjalbLSkIvP2t4QBdGHrJCT2eBmLyR4xVk';
 var DB_TABLE = 'entries_masters2026';
-var ESPN_URL = 'https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&season=2025&event=401811941';
+var ESPN_URL = 'https://www.masters.com/en_US/scores/feeds/2026/scores.json';
 var PROXY = 'https://api.allorigins.win/get?url=';
 var DEADLINE = new Date(2026, 3, 9, 8, 0, 0);
 var TABS = ['rules','enter','leaderboard','standings','field','admin'];
@@ -415,7 +415,7 @@ var S = {
 
 function isUnlocked(){ return new Date() >= DEADLINE; }
 function canSeeStandings(){ return isUnlocked() || S.adminIn; }
-function isTournamentFinal(){ return S.round >= 4 && S.tStatus.toUpperCase().indexOf('FINAL') >= 0; }
+function isTournamentFinal(){ return S.round >= 4 && (S.tStatus.toUpperCase().indexOf('FINAL') >= 0 || S.tStatus === 'FFFF'); }
 function pad2(n){ return String(Math.floor(n)).padStart(2,'0'); }
 function parsePar(s){
   if(!s && s!==0) return 0;
@@ -473,7 +473,7 @@ async function insertEntry(e){ return sbFetch(DB_TABLE,{method:'POST',body:e}); 
 async function updateEntry(id,p){ return sbFetch(DB_TABLE+'?id=eq.'+id,{method:'PATCH',body:p}); }
 async function deleteEntry(id){ return sbFetch(DB_TABLE+'?id=eq.'+id,{method:'DELETE',prefer:'return=minimal'}); }
 
-// ESPN
+// MASTERS OFFICIAL FEED
 async function fetchESPN(){
   try{
     var data = null;
@@ -481,20 +481,24 @@ async function fetchESPN(){
     if(!data){
       try{ var r2=await fetch(PROXY+encodeURIComponent(ESPN_URL)); if(r2.ok){ var w=await r2.json(); data=JSON.parse(w.contents); } } catch(_){}
     }
-    if(!data) return false;
-    var ev = data.events&&data.events[0]; if(!ev) return false;
-    S.tName = ev.name||'';
-    S.tStatus = (ev.status&&ev.status.type&&ev.status.type.name)||'';
-    S.round = parseInt((ev.status&&ev.status.period)||0);
-    var comps = (ev.competitions&&ev.competitions[0]&&ev.competitions[0].competitors)||[];
-    S.pgaPlayers = comps.map(function(c){
-      var score = parsePar(c.score||'E');
-      var sn = ((c.status&&c.status.type&&c.status.type.name)||'').toUpperCase();
-      var missed = ['CUT','WITHDRAWN','DISQUALIFIED','WD'].some(function(k){ return sn.indexOf(k)>=0; });
+    if(!data||!data.data||!data.data.player) return false;
+    var d = data.data;
+    var roundNum = parseInt(d.currentRound)||1;
+    S.tName = 'Masters Tournament';
+    S.tStatus = d.statusRound||'';
+    S.round = roundNum > 4 ? 4 : roundNum;
+    S.pgaPlayers = d.player.map(function(p){
+      var topar = p.topar||'0';
+      var score = topar==='E'||topar===''?0:parseInt(topar)||0;
+      var missed = p.status==='C'||p.newStatus==='C'||p.status==='WD';
+      var thru = p.thru||'';
+      var detail = thru ? 'Thru '+thru : (p.teetime||'');
       return {
-        displayName:(c.athlete&&c.athlete.displayName)||'',
-        score:score, scoreDisp:fmtPar(score), madeCut:!missed,
-        detail:(c.status&&c.status.type&&c.status.type.shortDetail)||fmtPar(score)
+        displayName: p.full_name||p.display_name||'',
+        score: score,
+        scoreDisp: score===0?'E':score>0?'+'+score:String(score),
+        madeCut: !missed,
+        detail: detail
       };
     }).filter(function(p){ return p.displayName; });
     S.pgaPlayers.sort(function(a,b){ return a.score-b.score; });
