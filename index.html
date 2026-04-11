@@ -476,7 +476,8 @@ async function fetchESPN(){
     var statusRound = d.statusRound||'';
     var pIdx = statusRound.indexOf('P');
     var fCount = (statusRound.match(/F/g)||[]).length;
-    var roundInProgress = pIdx>=0 ? pIdx+1 : Math.min(fCount+1,4);
+    // If a round is in progress use that; otherwise show last completed round (not +1)
+    var roundInProgress = pIdx>=0 ? pIdx+1 : Math.max(fCount,1);
     S.tName = 'Masters Tournament';
     S.tStatus = statusRound;
     S.round = roundInProgress;
