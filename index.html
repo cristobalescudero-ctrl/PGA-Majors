@@ -908,9 +908,12 @@ async function renderStandings(){
 
   document.getElementById('standingsContent').innerHTML=podH+prizeH
     +'<div class="card"><div class="card-header"><h3>Full Standings -- '+entries.length+' entries -- '+roundLabel+' -- '+sortLabel+'</h3>'+winRef+'</div>'
+    +'<div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--gray-100)">'
+    +'<input type="text" id="standingsSearch" class="form-control" placeholder="Search by name or entry..." oninput="filterStandings()" style="max-width:320px">'
+    +'</div>'
     +'<div style="overflow-x:auto"><table class="standings-table"><thead><tr>'
     +'<th>Rank</th><th>Entry</th><th>Score</th><th>'+tbHeader+'</th><th>Picks</th>'+thPrize
-    +'</tr></thead><tbody>'+rows+'</tbody></table></div></div>'
+    +'</tr></thead><tbody id="standingsBody">'+rows+'</tbody></table></div></div>'
     +cutNote+tbNote;
 }
 
@@ -1208,6 +1211,16 @@ async function delEntry(id){
   if(!confirm('Delete this entry?')) return;
   try{ await deleteEntry(id); } catch(e){ alert('Error: '+e.message); return; }
   renderAdmin();
+}
+
+// STANDINGS SEARCH
+function filterStandings(){
+  var q=document.getElementById('standingsSearch').value.toLowerCase();
+  var rows=document.querySelectorAll('#standingsBody tr');
+  rows.forEach(function(row){
+    var text=row.textContent.toLowerCase();
+    row.style.display=(!q||text.indexOf(q)>=0)?'':'none';
+  });
 }
 
 // NAV & INIT
