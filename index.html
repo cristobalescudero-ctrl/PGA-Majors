@@ -479,7 +479,9 @@ async function fetchESPN(){
     if(!data||!data.data||!data.data.player) return false;
     var d = data.data;
     var statusRound = d.statusRound||'';
-    var roundInProgress = statusRound.indexOf('P')>=0 ? statusRound.indexOf('P')+1 : 4;
+    var pIdx = statusRound.indexOf('P');
+    var fCount = (statusRound.match(/F/g)||[]).length;
+    var roundInProgress = pIdx>=0 ? pIdx+1 : Math.min(fCount+1, 4);
     S.tName = 'Masters Tournament';
     S.tStatus = statusRound;
     S.round = roundInProgress;
