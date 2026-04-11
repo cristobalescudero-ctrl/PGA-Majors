@@ -80,8 +80,6 @@ input,select{font-family:inherit;}
 .podium-rank{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.7;}
 .podium-name{font-size:1rem;font-weight:700;margin:4px 0 2px;}
 .podium-score{font-size:1.4rem;font-weight:700;}
-.podium-prize{font-size:.73rem;opacity:.7;margin-top:6px;}
-.podium-prize strong{font-size:.9rem;opacity:1;}
 .podium-empty{opacity:.3;}
 .prize-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--gray-200);border:1px solid var(--gray-200);border-radius:var(--radius);overflow:hidden;margin-bottom:1.25rem;}
 .prize-box{background:#fff;padding:1rem;display:flex;flex-direction:column;align-items:center;gap:4px;}
@@ -121,7 +119,6 @@ input,select{font-family:inherit;}
 .pick-cut{background:var(--gray-100);color:var(--gray-400);text-decoration:line-through;}
 .pick-unknown{background:var(--gray-100);color:var(--gray-500);}
 .pick-score{font-size:.64rem;}
-.prize-win{font-size:.85rem;font-weight:700;color:var(--green);}
 .lb-table{width:100%;border-collapse:collapse;}
 .lb-table thead th{padding:.6rem 1rem;font-size:.67rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gray-400);background:var(--gray-50);border-bottom:1px solid var(--gray-200);}
 .lb-table thead th:first-child{padding-left:1.25rem;}
@@ -432,7 +429,6 @@ function normName(s){
     .replace(/\u00f1/g,'n').replace(/\u00fc/g,'u').replace(/\u00fa/g,'u');
 }
 
-// SUPABASE
 async function sbFetch(path, opts){
   opts = opts||{};
   var method = opts.method||'GET';
@@ -465,7 +461,6 @@ async function insertEntry(e){ return sbFetch(DB_TABLE,{method:'POST',body:e}); 
 async function updateEntry(id,p){ return sbFetch(DB_TABLE+'?id=eq.'+id,{method:'PATCH',body:p}); }
 async function deleteEntry(id){ return sbFetch(DB_TABLE+'?id=eq.'+id,{method:'DELETE',prefer:'return=minimal'}); }
 
-// MASTERS FEED
 async function fetchESPN(){
   try{
     var data = null;
@@ -481,7 +476,7 @@ async function fetchESPN(){
     var statusRound = d.statusRound||'';
     var pIdx = statusRound.indexOf('P');
     var fCount = (statusRound.match(/F/g)||[]).length;
-    var roundInProgress = pIdx>=0 ? pIdx+1 : Math.min(fCount+1, 4);
+    var roundInProgress = pIdx>=0 ? pIdx+1 : Math.min(fCount+1,4);
     S.tName = 'Masters Tournament';
     S.tStatus = statusRound;
     S.round = roundInProgress;
@@ -507,7 +502,6 @@ async function fetchESPN(){
   } catch(e){ return false; }
 }
 
-// SCORING
 function findPlayer(name){
   if(!name) return null;
   var nl = normName(name);
@@ -535,19 +529,13 @@ function scoreEntry(entry){
   return {results:results,totalScore:best3.reduce(function(s,r){ return s+r.score; },0),qualifies:true,best3:best3};
 }
 
-// STANDINGS RANKING
-// TB only breaks ties at FFFF final. During tournament, tied entries share the same rank.
-// Rank counter is position-based so ties don't swallow subsequent rank numbers.
 function calcStandings(entries){
   var final = isTournamentFinal();
   var rows = entries.map(function(e){
     var sc = scoreEntry(e);
-    var tbDiff = (final && S.leaderScore!==null)
-      ? Math.abs((e.tiebreaker||0)-S.leaderScore)
-      : 9999;
+    var tbDiff = (final && S.leaderScore!==null) ? Math.abs((e.tiebreaker||0)-S.leaderScore) : 9999;
     return Object.assign({},e,sc,{tbDiff:tbDiff});
   });
-
   rows.sort(function(a,b){
     if(a.qualifies&&!b.qualifies) return -1;
     if(!a.qualifies&&b.qualifies) return 1;
@@ -556,9 +544,6 @@ function calcStandings(entries){
     if(final) return a.tbDiff-b.tbDiff;
     return 0;
   });
-
-  // Position-based rank assignment among qualifying entries only.
-  // Tied entries share a rank; the next distinct score gets the next position number.
   var qualPos = 0;
   rows.forEach(function(e,i,arr){
     if(!e.qualifies){ e.rank=null; return; }
@@ -566,7 +551,6 @@ function calcStandings(entries){
     if(qualPos===1){
       e.rank = 1;
     } else {
-      // Find previous qualifying entry
       var pi = i-1;
       while(pi>=0 && !arr[pi].qualifies) pi--;
       var prev = pi>=0 ? arr[pi] : null;
@@ -582,24 +566,15 @@ function calcStandings(entries){
   return rows;
 }
 
-function calcPrizes(st,entries){
+function calcPrizes(entries){
   var confirmed = entries.filter(function(e){ return e.payment_confirmed; }).length;
   var total = confirmed*CFG.ENTRY_FEE;
-  var final = isTournamentFinal();
   var bk = CFG.SPLITS.map(function(pct,i){
-    var r = i+1;
-    var gross = Math.floor(total*pct);
-    if(final){
-      var tied = st.filter(function(s){ return s.rank===r; });
-      var each = tied.length>0 ? Math.floor(gross/tied.length) : gross;
-      return {rank:r,gross:gross,each:each,count:tied.length};
-    }
-    return {rank:r,gross:gross,each:gross,count:0};
+    return {rank:i+1, gross:Math.floor(total*pct)};
   });
-  return {total:total,bk:bk};
+  return {total:total, bk:bk};
 }
 
-// PLAYER SEARCH WIDGETS
 function getPlayerList(){
   if(S.pgaPlayers.length>=80) return S.pgaPlayers.map(function(p){ return p.displayName; }).sort();
   return FIELD;
@@ -665,7 +640,6 @@ function clearPick(id){
   document.getElementById(id+'_sel').classList.add('hidden');
 }
 
-// ENTRY FORM
 function renderEntryForm(){
   if(isUnlocked()){
     var el = document.getElementById('tab-enter').querySelector('.card');
@@ -731,7 +705,6 @@ async function submitEntry(){
   btn.disabled=false; btn.textContent='Submit Entry';
 }
 
-// LOCKED STANDINGS VIEW
 function buildLockedStandings(entries){
   var paidCount=entries.filter(function(e){ return e.payment_confirmed; }).length;
   var total=paidCount*CFG.ENTRY_FEE;
@@ -762,12 +735,19 @@ function buildLockedStandings(entries){
   return h;
 }
 
-// STANDINGS
+function filterStandings(){
+  var q = (document.getElementById('standingsSearch').value||'').toLowerCase();
+  var rows = document.querySelectorAll('#standingsBody tr');
+  rows.forEach(function(row){
+    row.style.display = (!q || row.textContent.toLowerCase().indexOf(q)>=0) ? '' : 'none';
+  });
+}
+
 async function renderStandings(){
   document.getElementById('standingsContent').innerHTML='<div class="loading-state"><div class="spinner"></div></div>';
-  var entries=await fetchEntries();
-  var paidCount=entries.filter(function(e){ return e.payment_confirmed; }).length;
-  var total=paidCount*CFG.ENTRY_FEE;
+  var entries = await fetchEntries();
+  var paidCount = entries.filter(function(e){ return e.payment_confirmed; }).length;
+  var total = paidCount*CFG.ENTRY_FEE;
   document.getElementById('poolTotal').textContent='$'+total;
   document.getElementById('firstPrize').textContent='$'+Math.floor(total*0.70);
 
@@ -793,47 +773,45 @@ async function renderStandings(){
   var hasScores = S.pgaPlayers.length>0 && S.pgaPlayers.some(function(p){ return p.score!==0; });
   var isFinal = isTournamentFinal();
   var st = calcStandings(entries);
-  var prz = calcPrizes(st,entries);
+  var prz = calcPrizes(entries);
 
   // Podium -- final only
-  var podH='';
+  var podH = '';
   if(isFinal){
-    var pod=[1,2,3].map(function(r){ return st.find(function(s){ return s.rank===r; }); });
-    var medals=['&#127945;','&#127944;','&#127943;'];
-    var podL=['1st','2nd','3rd'];
-    podH='<div class="podium-grid">';
+    var pod = [1,2,3].map(function(r){ return st.find(function(s){ return s.rank===r; }); });
+    var medals = ['&#127945;','&#127944;','&#127943;'];
+    var podL = ['1st','2nd','3rd'];
+    podH = '<div class="podium-grid">';
     pod.forEach(function(e,i){
       if(!e){
-        podH+='<div class="podium-card podium-card-'+(i+1)+' podium-empty" data-medal="'+medals[i]+'">'
+        podH += '<div class="podium-card podium-card-'+(i+1)+' podium-empty" data-medal="'+medals[i]+'">'
           +'<div class="podium-rank">'+podL[i]+'</div>'
           +'<div class="podium-name">--</div></div>';
       } else {
-        var pr=prz.bk[i];
-        var nm=e.entry_label||e.participant_name;
-        podH+='<div class="podium-card podium-card-'+(i+1)+'" data-medal="'+medals[i]+'">'
+        var nm = e.entry_label||e.participant_name;
+        podH += '<div class="podium-card podium-card-'+(i+1)+'" data-medal="'+medals[i]+'">'
           +'<div class="podium-rank">'+podL[i]+'</div>'
           +'<div class="podium-name">'+nm+'</div>'
           +'<div class="podium-score">'+fmtPar(e.totalScore)+'</div>'
-          +'<div class="podium-prize">Prize: <strong>$'+pr.each+(pr.count>1?' (split)':'')+'</strong></div>'
           +'</div>';
       }
     });
-    podH+='</div>';
+    podH += '</div>';
   }
 
   // Prize grid -- final only
-  var prizeH='';
+  var prizeH = '';
   if(isFinal){
-    var pc=entries.filter(function(e){ return e.payment_confirmed; }).length;
-    prizeH='<div class="prize-grid">'
+    var pc = entries.filter(function(e){ return e.payment_confirmed; }).length;
+    prizeH = '<div class="prize-grid">'
       +'<div class="prize-box total"><div class="amount">$'+prz.total+'</div><div class="label">'+pc+' paid</div></div>'
-      +'<div class="prize-box"><div class="amount">$'+prz.bk[0].each+'</div><div class="label">1st</div></div>'
-      +'<div class="prize-box"><div class="amount">$'+prz.bk[1].each+'</div><div class="label">2nd</div></div>'
-      +'<div class="prize-box"><div class="amount">$'+prz.bk[2].each+'</div><div class="label">3rd</div></div>'
-      +'</div>';
+      +'<div class="prize-box"><div class="amount">$'+prz.bk[0].gross+'</div><div class="label">1st (70%)</div></div>'
+      +'<div class="prize-box"><div class="amount">$'+prz.bk[1].gross+'</div><div class="label">2nd (20%)</div></div>'
+      +'<div class="prize-box"><div class="amount">$'+prz.bk[2].gross+'</div><div class="label">3rd (10%)</div></div>'
+      +'</div>'
+      +'<div class="alert alert-info" style="margin-bottom:1.25rem">Prize amounts shown above. Organizers will distribute based on final standings.</div>';
   }
 
-  // Display order: alphabetical pre-scores, by rank once scores exist
   var displaySt;
   if(hasScores){
     displaySt = st.slice();
@@ -843,8 +821,7 @@ async function renderStandings(){
     });
   }
 
-  // Pre-compute which ranks are shared (for T prefix)
-  var rankCounts={};
+  var rankCounts = {};
   displaySt.forEach(function(e){ if(e.rank) rankCounts[e.rank]=(rankCounts[e.rank]||0)+1; });
 
   var roundLabel = S.round>0 ? 'Round '+S.round : 'Pre-Tournament';
@@ -852,145 +829,137 @@ async function renderStandings(){
   var tbHeader = isFinal
     ? 'TB <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.62rem">(active)</span>'
     : 'TB <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.62rem">(end only)</span>';
+  var winRef = isFinal&&S.leaderScore!==null
+    ? '<span style="color:var(--gray-400);font-size:.72rem">Winner: <strong style="color:var(--red)">'+fmtPar(S.leaderScore)+'</strong> &middot; TB reference</span>'
+    : '';
 
-  var rows='';
+  var rows = '';
   displaySt.forEach(function(e){
-    var rnk=e.rank;
-    var tied=rnk && rankCounts[rnk]>1;
-    var lbl=tied?'T'+rnk : (rnk?String(rnk):'--');
-    var trC=rnk===1?'row-rank-1':rnk===2?'row-rank-2':rnk===3?'row-rank-3':(!e.qualifies&&hasScores?'row-dnq':'');
-    var rb=rnk===1?'<span class="rank-badge rb-1">'+lbl+'</span>'
-      :rnk===2?'<span class="rank-badge rb-2">'+lbl+'</span>'
-      :rnk===3?'<span class="rank-badge rb-3">'+lbl+'</span>'
-      :rnk?'<span class="rb-n">'+lbl+'</span>'
-      :'<span class="rb-n">--</span>';
-    var sc=hasScores
-      ?(e.qualifies&&e.totalScore!==null
-        ?'<span class="score-chip '+(e.totalScore<0?'chip-under':e.totalScore>0?'chip-over':'chip-even')+'">'+fmtPar(e.totalScore)+'</span>'
-        :'<span class="chip-dnq">DNQ</span>')
-      :'<span style="color:var(--gray-400);font-size:.75rem">--</span>';
-    var pb=!e.payment_confirmed?'<span class="pay-badge">Pending</span>':'';
-    var b3n=(e.best3||[]).map(function(b){ return b.name; });
-    var picks=(e.players||[]).map(function(nm){
+    var rnk = e.rank;
+    var tied = rnk && rankCounts[rnk]>1;
+    var lbl = tied ? 'T'+rnk : (rnk ? String(rnk) : '--');
+    var trC = rnk===1?'row-rank-1':rnk===2?'row-rank-2':rnk===3?'row-rank-3':(!e.qualifies&&hasScores?'row-dnq':'');
+    var rb = rnk===1 ? '<span class="rank-badge rb-1">'+lbl+'</span>'
+      : rnk===2 ? '<span class="rank-badge rb-2">'+lbl+'</span>'
+      : rnk===3 ? '<span class="rank-badge rb-3">'+lbl+'</span>'
+      : rnk ? '<span class="rb-n">'+lbl+'</span>'
+      : '<span class="rb-n">--</span>';
+    var sc = hasScores
+      ? (e.qualifies&&e.totalScore!==null
+        ? '<span class="score-chip '+(e.totalScore<0?'chip-under':e.totalScore>0?'chip-over':'chip-even')+'">'+fmtPar(e.totalScore)+'</span>'
+        : '<span class="chip-dnq">DNQ</span>')
+      : '<span style="color:var(--gray-400);font-size:.75rem">--</span>';
+    var pb = !e.payment_confirmed ? '<span class="pay-badge">Pending</span>' : '';
+    var b3n = (e.best3||[]).map(function(b){ return b.name; });
+    var picks = (e.players||[]).map(function(nm){
       if(!hasScores) return '<span class="pick pick-made">'+nm.split(' ').slice(-1)[0]+'</span>';
-      var r=e.results&&e.results.find(function(x){ return x.name===nm; });
+      var r = e.results&&e.results.find(function(x){ return x.name===nm; });
       if(!r) return '<span class="pick pick-unknown">'+nm.split(' ').slice(-1)[0]+'</span>';
-      var iB=b3n.indexOf(nm)>=0;
-      var cls=!r.found?'pick-unknown':!r.madeCut?'pick-cut':iB?'pick-counting':'pick-made';
-      var last=nm.split(' ').slice(-1)[0];
-      var sc2=r.found?' <span class="pick-score">'+r.scoreDisp+'</span>':'';
+      var iB = b3n.indexOf(nm)>=0;
+      var cls = !r.found?'pick-unknown':!r.madeCut?'pick-cut':iB?'pick-counting':'pick-made';
+      var last = nm.split(' ').slice(-1)[0];
+      var sc2 = r.found ? ' <span class="pick-score">'+r.scoreDisp+'</span>' : '';
       return '<span class="pick '+cls+'" title="'+nm+'">'+last+sc2+'</span>';
     }).join('');
-    var lname=e.entry_label||e.participant_name;
-    var sub=(e.entry_label&&e.entry_label!==e.participant_name)?'<div class="entry-sub">'+e.participant_name+'</div>':'';
-    var prizeCell='';
-    if(isFinal){
-      var pe=prz.bk.find(function(b){ return b.rank===rnk; });
-      prizeCell='<td style="text-align:right;width:80px">'+(pe?'<span class="prize-win">$'+pe.each+'</span>':'--')+'</td>';
-    }
-    rows+='<tr class="'+trC+'">'
+    var lname = e.entry_label||e.participant_name;
+    var sub = (e.entry_label&&e.entry_label!==e.participant_name) ? '<div class="entry-sub">'+e.participant_name+'</div>' : '';
+    rows += '<tr class="'+trC+'">'
       +'<td style="width:48px">'+rb+'</td>'
       +'<td><div class="entry-name">'+lname+pb+'</div>'+sub+'</td>'
       +'<td style="width:80px">'+sc+'</td>'
       +'<td style="width:80px;color:var(--gray-400);font-size:.77rem">'+fmtPar(e.tiebreaker||0)+'</td>'
       +'<td><div class="picks-row">'+picks+'</div></td>'
-      +prizeCell
       +'</tr>';
   });
 
-  var cutNote=S.round<3&&hasScores
-    ?'<div class="alert alert-info" style="margin-top:1rem">Cut not yet applied -- standings preliminary until Round 2 complete Friday.</div>':'' ;
-  var tbNote=!isFinal&&hasScores
-    ?'<div class="alert alert-info" style="margin-top:1rem">Tiebreaker not active -- it only separates ties once the tournament is final.</div>':'';
-  var winRef=isFinal&&S.leaderScore!==null
-    ?'<span style="color:var(--gray-400);font-size:.72rem">Winner: <strong style="color:var(--red)">'+fmtPar(S.leaderScore)+'</strong> &middot; TB reference</span>':'';
-  var thPrize=isFinal?'<th style="text-align:right">Prize</th>':'';
+  var cutNote = S.round<3&&hasScores
+    ? '<div class="alert alert-info" style="margin-top:1rem">Cut not yet applied -- standings preliminary until Round 2 complete.</div>' : '';
+  var tbNote = !isFinal&&hasScores
+    ? '<div class="alert alert-info" style="margin-top:1rem">Tiebreaker not active -- only separates ties once the tournament is final.</div>' : '';
 
-  document.getElementById('standingsContent').innerHTML=podH+prizeH
+  document.getElementById('standingsContent').innerHTML = podH+prizeH
     +'<div class="card"><div class="card-header"><h3>Full Standings -- '+entries.length+' entries -- '+roundLabel+' -- '+sortLabel+'</h3>'+winRef+'</div>'
     +'<div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--gray-100)">'
     +'<input type="text" id="standingsSearch" class="form-control" placeholder="Search by name or entry..." oninput="filterStandings()" style="max-width:320px">'
     +'</div>'
     +'<div style="overflow-x:auto"><table class="standings-table"><thead><tr>'
-    +'<th>Rank</th><th>Entry</th><th>Score</th><th>'+tbHeader+'</th><th>Picks</th>'+thPrize
+    +'<th>Rank</th><th>Entry</th><th>Score</th><th>'+tbHeader+'</th><th>Picks</th>'
     +'</tr></thead><tbody id="standingsBody">'+rows+'</tbody></table></div></div>'
     +cutNote+tbNote;
 }
 
-// LEADERBOARD
 function renderLeaderboard(){
-  var el=document.getElementById('leaderboardContent');
+  var el = document.getElementById('leaderboardContent');
   if(S.pgaPlayers.length>=20){
-    var rnd=S.round>0?'Round '+S.round:'Pre-Tournament';
-    var upd=S.lastUpdated?S.lastUpdated.toLocaleTimeString():'';
-    var made=S.pgaPlayers.filter(function(p){ return p.madeCut; }).sort(function(a,b){ return a.score-b.score; });
-    var cut=S.pgaPlayers.filter(function(p){ return !p.madeCut; }).sort(function(a,b){ return a.score-b.score; });
-    var madeR='';
-    var cutR='';
+    var rnd = S.round>0 ? 'Round '+S.round : 'Pre-Tournament';
+    var upd = S.lastUpdated ? S.lastUpdated.toLocaleTimeString() : '';
+    var made = S.pgaPlayers.filter(function(p){ return p.madeCut; }).sort(function(a,b){ return a.score-b.score; });
+    var cut = S.pgaPlayers.filter(function(p){ return !p.madeCut; }).sort(function(a,b){ return a.score-b.score; });
+    var madeR = '';
+    var cutR = '';
     made.forEach(function(p,i){
-      var sc=p.score<0?'lb-under':p.score>0?'lb-over':'lb-even';
-      madeR+='<tr><td style="font-weight:600;color:var(--gray-400);font-size:.75rem">'+(i+1)+'</td>'
+      var sc = p.score<0?'lb-under':p.score>0?'lb-over':'lb-even';
+      madeR += '<tr><td style="font-weight:600;color:var(--gray-400);font-size:.75rem">'+(i+1)+'</td>'
         +'<td class="lb-name">'+p.displayName+'</td>'
         +'<td class="'+sc+'">'+fmtPar(p.score)+'</td>'
         +'<td style="font-size:.72rem;color:var(--gray-400)">'+(p.detail||'')+'</td></tr>';
     });
     cut.forEach(function(p){
-      var sc=p.score<0?'lb-under':p.score>0?'lb-over':'lb-even';
-      cutR+='<tr class="lb-cut"><td style="font-size:.72rem;color:var(--red)">MC</td>'
+      var sc = p.score<0?'lb-under':p.score>0?'lb-over':'lb-even';
+      cutR += '<tr class="lb-cut"><td style="font-size:.72rem;color:var(--red)">MC</td>'
         +'<td class="lb-name">'+p.displayName+'</td>'
         +'<td class="'+sc+'">'+fmtPar(p.score)+'</td>'
         +'<td style="font-size:.72rem;color:var(--gray-400)">Missed Cut</td></tr>';
     });
-    el.innerHTML='<div class="card"><div class="card-header"><h3>2026 Masters -- Live Scores</h3><span class="meta">'+rnd+' -- '+upd+'</span></div>'
+    el.innerHTML = '<div class="card"><div class="card-header"><h3>2026 Masters -- Live Scores</h3><span class="meta">'+rnd+' -- '+upd+'</span></div>'
       +'<div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>Pos</th><th>Player</th><th>Score</th><th>Detail</th></tr></thead><tbody>'
       +madeR
-      +(cutR?'<tr><td colspan="4" style="padding:.4rem 1.25rem;background:var(--gray-50);font-size:.68rem;font-weight:700;color:var(--gray-400);text-transform:uppercase">Missed Cut</td></tr>'+cutR:'')
+      +(cutR ? '<tr><td colspan="4" style="padding:.4rem 1.25rem;background:var(--gray-50);font-size:.68rem;font-weight:700;color:var(--gray-400);text-transform:uppercase">Missed Cut</td></tr>'+cutR : '')
       +'</tbody></table></div></div>';
     return;
   }
-  var rows=FIELD.map(function(name){
+  var rows = FIELD.map(function(name){
     return '<tr><td>--</td><td class="lb-name">'+name+'</td><td class="lb-even">--</td><td style="font-size:.72rem;color:var(--gray-400)">Scheduled</td></tr>';
   }).join('');
-  el.innerHTML='<div class="alert alert-info" style="margin-bottom:1.25rem">The 2026 Masters begins <strong>April 9</strong>. Scores update automatically once play begins.</div>'
+  el.innerHTML = '<div class="alert alert-info" style="margin-bottom:1.25rem">The 2026 Masters begins <strong>April 9</strong>. Scores update automatically once play begins.</div>'
     +'<div class="card"><div class="card-header"><h3>2026 Masters Field -- '+FIELD.length+' Players</h3><span class="meta">Alphabetical</span></div>'
     +'<div style="overflow-x:auto"><table class="lb-table"><thead><tr><th>--</th><th>Player</th><th>Score</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 
-// FIELD ANALYSIS
 async function renderField(){
-  var el=document.getElementById('fieldContent');
+  var el = document.getElementById('fieldContent');
   if(!el||!canSeeStandings()) return;
   el.innerHTML='<div class="loading-state"><div class="spinner"></div></div>';
-  var entries=await fetchEntries();
+  var entries = await fetchEntries();
   if(!entries.length){ el.innerHTML='<div class="loading-state"><p>No entries yet</p></div>'; return; }
-  var totalE=entries.length;
-  var paidCount=entries.filter(function(e){ return e.payment_confirmed; }).length;
-  var pickMap={};
+  var totalE = entries.length;
+  var paidCount = entries.filter(function(e){ return e.payment_confirmed; }).length;
+  var pickMap = {};
   entries.forEach(function(e){
     (e.players||[]).forEach(function(p){ if(p) pickMap[p]=(pickMap[p]||0)+1; });
   });
-  var ranked=Object.entries(pickMap).sort(function(a,b){ return b[1]-a[1]||a[0].localeCompare(b[0]); });
-  var maxCount=ranked[0]?ranked[0][1]:1;
-  var top10=ranked.slice(0,10);
-  var rest=ranked.slice(10);
-  var unpicked=FIELD.filter(function(p){ return !pickMap[p]; });
-  var chalk=ranked[0];
-  var darkHorse=ranked[ranked.length-1];
-  var avgTB=Math.round(entries.map(function(e){ return e.tiebreaker||0; }).reduce(function(a,b){ return a+b; },0)/totalE);
-  var banner='<div style="background:linear-gradient(90deg,#14532d,#166534);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;color:#fff">'
+  var ranked = Object.entries(pickMap).sort(function(a,b){ return b[1]-a[1]||a[0].localeCompare(b[0]); });
+  var maxCount = ranked[0] ? ranked[0][1] : 1;
+  var top10 = ranked.slice(0,10);
+  var rest = ranked.slice(10);
+  var unpicked = FIELD.filter(function(p){ return !pickMap[p]; });
+  var chalk = ranked[0];
+  var darkHorse = ranked[ranked.length-1];
+  var avgTB = Math.round(entries.map(function(e){ return e.tiebreaker||0; }).reduce(function(a,b){ return a+b; },0)/totalE);
+  var banner = '<div style="background:linear-gradient(90deg,#14532d,#166534);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;color:#fff">'
     +'<span style="font-size:1.2rem">&#127948;</span>'
     +'<span style="font-size:.83rem"><strong>Entries locked.</strong> '+totalE+' entries submitted.</span></div>';
-  var heroHtml='<div class="field-hero">'
+  var heroHtml = '<div class="field-hero">'
     +'<div class="field-stat"><div class="fs-lbl">Total entries</div><div class="fs-val">'+totalE+'</div><div class="fs-sub">$'+(paidCount*CFG.ENTRY_FEE)+' pool</div></div>'
     +'<div class="field-stat"><div class="fs-lbl">Most picked</div><div class="fs-val">'+(chalk?chalk[0].split(' ').slice(-1)[0]:'--')+'</div><div class="fs-sub">'+(chalk?chalk[1]+' entries ('+Math.round(chalk[1]/totalE*100)+'%)':'')+'</div></div>'
     +'<div class="field-stat"><div class="fs-lbl">Dark horse</div><div class="fs-val">'+(darkHorse?darkHorse[0].split(' ').slice(-1)[0]:'--')+'</div><div class="fs-sub">'+(darkHorse?'Only '+darkHorse[1]+' '+(darkHorse[1]===1?'entry':'entries'):'')+'</div></div>'
     +'<div class="field-stat"><div class="fs-lbl">Avg tiebreaker</div><div class="fs-val">'+fmtPar(avgTB)+'</div><div class="fs-sub">Across all entries</div></div>'
     +'</div>';
-  var rLbl=function(i){ return i===0?'1st - Most popular':i===1?'2nd':i===2?'3rd':'#'+(i+1); };
-  var rCls=function(i){ return i===0?'r1':i===1?'r2':i===2?'r3':''; };
-  var bCls=function(i){ return i===0?'gold':i===1?'silver':i===2?'bronze':''; };
-  var tCls=function(i){ return i===0?' gold':i===1?' silver':i===2?' bronze':''; };
-  var cardsHtml='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">'
+  var rLbl = function(i){ return i===0?'1st - Most popular':i===1?'2nd':i===2?'3rd':'#'+(i+1); };
+  var rCls = function(i){ return i===0?'r1':i===1?'r2':i===2?'r3':''; };
+  var bCls = function(i){ return i===0?'gold':i===1?'silver':i===2?'bronze':''; };
+  var tCls = function(i){ return i===0?' gold':i===1?' silver':i===2?' bronze':''; };
+  var cardsHtml = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">'
     +'<p style="font-size:.9rem;font-weight:700;color:var(--gray-900)">Most Popular Picks</p>'
     +'<span style="font-size:.72rem;color:var(--gray-400)">'+totalE+' entries total</span></div>'
     +'<div class="pop-grid">'+top10.map(function(item,i){
@@ -1004,8 +973,8 @@ async function renderField(){
         +'<div class="pop-bar-wrap"><div class="pop-bar '+bCls(i)+'" style="width:'+Math.round(count/maxCount*100)+'%"></div></div>'
         +'</div>';
     }).join('')+'</div>';
-  var compactHtml=rest.length
-    ?'<div class="card" style="margin-bottom:1.25rem"><div class="card-header"><h3>The Rest of the Field</h3><span class="meta">'+rest.length+' players picked</span></div><div style="overflow-x:auto"><table class="compact-table"><thead><tr><th>#</th><th>Player</th><th>Picks</th><th>Ownership</th></tr></thead><tbody>'
+  var compactHtml = rest.length
+    ? '<div class="card" style="margin-bottom:1.25rem"><div class="card-header"><h3>The Rest of the Field</h3><span class="meta">'+rest.length+' players picked</span></div><div style="overflow-x:auto"><table class="compact-table"><thead><tr><th>#</th><th>Player</th><th>Picks</th><th>Ownership</th></tr></thead><tbody>'
       +rest.map(function(item,i){
         var name=item[0]; var count=item[1]; var pct=Math.round(count/totalE*100);
         return '<tr><td style="color:var(--gray-400);font-size:.75rem">#'+(i+11)+'</td>'
@@ -1014,53 +983,51 @@ async function renderField(){
           +'<td><span style="font-size:.8rem;font-weight:600;color:var(--gray-700)">'+pct+'%</span>'
           +'<span class="ibar"><span class="ibar-fill" style="width:'+Math.round(count/maxCount*100)+'%"></span></span></td></tr>';
       }).join('')+'</tbody></table></div></div>'
-    :'';
-  var unpickedHtml=unpicked.length
-    ?'<div class="card"><div class="card-header"><h3>Not Picked by Anyone</h3><span class="meta">'+unpicked.length+' players</span></div>'
+    : '';
+  var unpickedHtml = unpicked.length
+    ? '<div class="card"><div class="card-header"><h3>Not Picked by Anyone</h3><span class="meta">'+unpicked.length+' players</span></div>'
       +'<div style="padding:.85rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem">'+unpicked.map(function(n){ return '<span class="tag">'+n+'</span>'; }).join('')+'</div></div>'
-    :'';
-  el.innerHTML=banner+heroHtml+cardsHtml+compactHtml+unpickedHtml;
+    : '';
+  el.innerHTML = banner+heroHtml+cardsHtml+compactHtml+unpickedHtml;
 }
 
-// EXPORT CSV
 function exportCSV(){
-  var entries=S.liveEntries;
+  var entries = S.liveEntries;
   if(!entries.length){ alert('No entries to export.'); return; }
-  var headers=['Entry Label','Name','Email','Pick 1','Pick 2','Pick 3','Pick 4','Pick 5','Alternate','Tiebreaker','Payment','Submitted'];
-  var rows=entries.map(function(e){
+  var headers = ['Entry Label','Name','Email','Pick 1','Pick 2','Pick 3','Pick 4','Pick 5','Alternate','Tiebreaker','Payment','Submitted'];
+  var rows = entries.map(function(e){
     return [
-      e.entry_label||e.participant_name,e.participant_name,e.email,
-      (e.players&&e.players[0])||'',(e.players&&e.players[1])||'',(e.players&&e.players[2])||'',
-      (e.players&&e.players[3])||'',(e.players&&e.players[4])||'',
-      e.alternate||'',e.tiebreaker||0,
+      e.entry_label||e.participant_name, e.participant_name, e.email,
+      (e.players&&e.players[0])||'', (e.players&&e.players[1])||'', (e.players&&e.players[2])||'',
+      (e.players&&e.players[3])||'', (e.players&&e.players[4])||'',
+      e.alternate||'', e.tiebreaker||0,
       e.payment_confirmed?'Paid':'Pending',
       new Date(e.submitted_at).toLocaleDateString()
     ].map(function(v){ return '"'+String(v).replace(/"/g,'""')+'"'; }).join(',');
   });
-  var csv=[headers.join(',')].concat(rows).join('\n');
-  var blob=new Blob([csv],{type:'text/csv'});
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='masters2026-entries.csv';
+  var csv = [headers.join(',')].concat(rows).join('\n');
+  var blob = new Blob([csv],{type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'masters2026-entries.csv';
   a.click();
 }
 
-// PANIC MODE
 function togglePanic(){
-  var active=localStorage.getItem('masters_panic')==='1';
-  localStorage.setItem('masters_panic',active?'0':'1');
+  var active = localStorage.getItem('masters_panic')==='1';
+  localStorage.setItem('masters_panic', active?'0':'1');
   applyPanic();
   if(S.adminIn) renderAdmin();
 }
 function applyPanic(){
-  var active=localStorage.getItem('masters_panic')==='1';
-  var existing=document.getElementById('panicOverlay');
+  var active = localStorage.getItem('masters_panic')==='1';
+  var existing = document.getElementById('panicOverlay');
   if(active&&!existing){
-    var ov=document.createElement('div');
-    ov.id='panicOverlay';
-    ov.style.cssText='position:fixed;inset:0;z-index:9999;background:#006747;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;text-align:center;padding:2rem;';
-    var clicks=0;
-    ov.innerHTML='<div style="border:3px solid #C8A951;border-radius:4px;padding:3rem 3.5rem;max-width:620px;background:rgba(0,0,0,.15)">'
+    var ov = document.createElement('div');
+    ov.id = 'panicOverlay';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#006747;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;text-align:center;padding:2rem;';
+    var clicks = 0;
+    ov.innerHTML = '<div style="border:3px solid #C8A951;border-radius:4px;padding:3rem 3.5rem;max-width:620px;background:rgba(0,0,0,.15)">'
       +'<div style="color:#C8A951;font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.5rem">Augusta National Golf Club</div>'
       +'<div id="panicFlag" style="font-size:2.5rem;margin-bottom:1rem;cursor:pointer;user-select:none;">&#9971;</div>'
       +'<h1 style="font-family:Georgia,serif;color:#fff;font-size:1.55rem;font-weight:600;line-height:1.5;margin-bottom:1.25rem">The Ruling Committee is reviewing<br>an unusual situation on the course.</h1>'
@@ -1081,7 +1048,6 @@ function applyPanic(){
   }
 }
 
-// ADMIN
 function adminLogin(){
   if(document.getElementById('adminPwd').value===CFG.ADMIN_PWD){
     S.adminIn=true;
@@ -1093,14 +1059,14 @@ function adminLogin(){
 async function renderAdmin(){
   closeEdit();
   document.getElementById('adminContent').innerHTML='<div class="loading-state"><div class="spinner"></div></div>';
-  var entries=await fetchEntries();
-  var paidCount=entries.filter(function(e){ return e.payment_confirmed; }).length;
-  document.getElementById('adminConnStatus').innerHTML=S.sbConnected
-    ?'<span class="conn-dot"></span>Supabase connected'
-    :'<span class="conn-dot off"></span>Not connected';
-  var panicActive=localStorage.getItem('masters_panic')==='1';
-  var sorted=sortAlpha(entries);
-  var rows=sorted.map(function(e){
+  var entries = await fetchEntries();
+  var paidCount = entries.filter(function(e){ return e.payment_confirmed; }).length;
+  document.getElementById('adminConnStatus').innerHTML = S.sbConnected
+    ? '<span class="conn-dot"></span>Supabase connected'
+    : '<span class="conn-dot off"></span>Not connected';
+  var panicActive = localStorage.getItem('masters_panic')==='1';
+  var sorted = sortAlpha(entries);
+  var rows = sorted.map(function(e){
     return '<tr>'
       +'<td><div style="font-weight:600;font-size:.8rem">'+(e.entry_label||e.participant_name)+'</div>'
       +'<div style="color:var(--gray-400);font-size:.7rem">'+e.participant_name+'</div></td>'
@@ -1116,13 +1082,11 @@ async function renderAdmin(){
       +'<button class="btn btn-sm btn-danger" onclick="delEntry(\''+e.id+'\')" style="margin-left:4px">Delete</button>'
       +'</td></tr>';
   }).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400)">No entries yet.</td></tr>';
-
-  var panicStyle=panicActive
-    ?'background:#7f1d1d;color:#fca5a5;border:1.5px solid #ef4444;'
-    :'background:#fffbeb;color:#92400e;border:1.5px solid #fde68a;';
-  var panicLabel=panicActive?'ACTIVE -- Click to Restore Site':'Ruling Committee Mode';
-
-  document.getElementById('adminContent').innerHTML=
+  var panicStyle = panicActive
+    ? 'background:#7f1d1d;color:#fca5a5;border:1.5px solid #ef4444;'
+    : 'background:#fffbeb;color:#92400e;border:1.5px solid #fde68a;';
+  var panicLabel = panicActive ? 'ACTIVE -- Click to Restore Site' : 'Ruling Committee Mode';
+  document.getElementById('adminContent').innerHTML =
     '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">'
     +'<div style="font-size:.83rem;color:var(--gray-700)"><strong>'+entries.length+'</strong> entries -- <strong>'+paidCount+'</strong> paid -- Pool: <strong style="color:var(--green)">$'+(paidCount*CFG.ENTRY_FEE)+'</strong></div>'
     +'<div style="display:flex;gap:.5rem;flex-wrap:wrap">'
@@ -1138,18 +1102,18 @@ async function renderAdmin(){
     +'</tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 function openEdit(id){
-  var e=S.liveEntries.find(function(x){ return x.id===id; });
+  var e = S.liveEntries.find(function(x){ return x.id===id; });
   if(!e) return;
-  var pickSelects=[1,2,3,4,5].map(function(i){
-    var cur=e.players&&e.players[i-1]||'';
+  var pickSelects = [1,2,3,4,5].map(function(i){
+    var cur = e.players&&e.players[i-1]||'';
     return '<div class="form-group"><label class="form-label">Pick '+i+'</label>'
       +'<select class="form-select" id="ep_'+i+'"><option value="">Select...</option>'
       +FIELD.map(function(n){ return '<option value="'+n+'"'+(n===cur?' selected':'')+'>'+n+'</option>'; }).join('')
       +'</select></div>';
   }).join('');
-  var altOpts='<option value="">None</option>'
+  var altOpts = '<option value="">None</option>'
     +FIELD.map(function(n){ return '<option value="'+n+'"'+(n===e.alternate?' selected':'')+'>'+n+'</option>'; }).join('');
-  document.getElementById('editBody').innerHTML=
+  document.getElementById('editBody').innerHTML =
     '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:.75rem">'
     +'<div class="form-group"><label class="form-label">Entry Label</label><input type="text" class="form-control" id="ep_label" value="'+(e.entry_label||'')+'"></div>'
     +'<div class="form-group"><label class="form-label">Name</label><input type="text" class="form-control" id="ep_name" value="'+(e.participant_name||'')+'"></div>'
@@ -1167,7 +1131,7 @@ function openEdit(id){
     +'<button class="btn btn-ghost" onclick="closeEdit()">Cancel</button>'
     +'</div>'
     +'<div id="editError" class="alert alert-error hidden" style="margin-top:.75rem"></div>';
-  var sec=document.getElementById('editSection');
+  var sec = document.getElementById('editSection');
   sec.classList.remove('hidden');
   sec.scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -1176,30 +1140,30 @@ function closeEdit(){
   document.getElementById('editBody').innerHTML='';
 }
 async function saveEdit(id){
-  var players=[];
+  var players = [];
   for(var i=1;i<=5;i++){
-    var v=document.getElementById('ep_'+i);
+    var v = document.getElementById('ep_'+i);
     if(v&&v.value) players.push(v.value);
   }
   if(players.length<3){ alert('Need at least 3 picks.'); return; }
   if(new Set(players).size!==players.length){ alert('Duplicate picks.'); return; }
-  var tb=parseInt(document.getElementById('ep_tb').value,10);
+  var tb = parseInt(document.getElementById('ep_tb').value,10);
   if(isNaN(tb)){ alert('Invalid tiebreaker.'); return; }
-  var patch={
-    participant_name:document.getElementById('ep_name').value.trim(),
-    entry_label:document.getElementById('ep_label').value.trim(),
-    email:document.getElementById('ep_email').value.trim(),
-    players:players,
-    alternate:document.getElementById('ep_alt').value,
-    tiebreaker:tb
+  var patch = {
+    participant_name: document.getElementById('ep_name').value.trim(),
+    entry_label: document.getElementById('ep_label').value.trim(),
+    email: document.getElementById('ep_email').value.trim(),
+    players: players,
+    alternate: document.getElementById('ep_alt').value,
+    tiebreaker: tb
   };
   try{
     await updateEntry(id,patch);
     closeEdit();
     renderAdmin();
   } catch(e){
-    var errEl=document.getElementById('editError');
-    errEl.textContent='Error: '+e.message;
+    var errEl = document.getElementById('editError');
+    errEl.textContent = 'Error: '+e.message;
     errEl.classList.remove('hidden');
   }
 }
@@ -1213,26 +1177,15 @@ async function delEntry(id){
   renderAdmin();
 }
 
-// STANDINGS SEARCH
-function filterStandings(){
-  var q=document.getElementById('standingsSearch').value.toLowerCase();
-  var rows=document.querySelectorAll('#standingsBody tr');
-  rows.forEach(function(row){
-    var text=row.textContent.toLowerCase();
-    row.style.display=(!q||text.indexOf(q)>=0)?'':'none';
-  });
-}
-
-// NAV & INIT
 function showTab(tab){
   TABS.forEach(function(t){
-    var p=document.getElementById('tab-'+t);
+    var p = document.getElementById('tab-'+t);
     if(p) p.classList.remove('active');
   });
   document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
-  var pane=document.getElementById('tab-'+tab);
+  var pane = document.getElementById('tab-'+tab);
   if(pane) pane.classList.add('active');
-  var btn=document.querySelector('.nav-btn[data-tab="'+tab+'"]');
+  var btn = document.querySelector('.nav-btn[data-tab="'+tab+'"]');
   if(btn) btn.classList.add('active');
   if(tab==='standings') renderStandings();
   if(tab==='leaderboard') renderLeaderboard();
@@ -1241,21 +1194,18 @@ function showTab(tab){
   if(tab==='admin'&&S.adminIn) renderAdmin();
 }
 function updateStatusBar(){
-  document.getElementById('statusDot').className=S.pgaPlayers.length?'dot dot-live':'dot dot-off';
-  document.getElementById('statusText').textContent=S.pgaPlayers.length?S.tName+' Round '+S.round:'Awaiting tournament data';
-  document.getElementById('topBarInfo').textContent=S.sbConnected?'DB connected -- '+S.liveEntries.length+' entries loaded':'Connecting...';
+  document.getElementById('statusDot').className = S.pgaPlayers.length ? 'dot dot-live' : 'dot dot-off';
+  document.getElementById('statusText').textContent = S.pgaPlayers.length ? S.tName+' Round '+S.round : 'Awaiting tournament data';
+  document.getElementById('topBarInfo').textContent = S.sbConnected ? 'DB connected -- '+S.liveEntries.length+' entries loaded' : 'Connecting...';
 }
 async function refreshAll(){
-  var btn=document.getElementById('refreshBtn');
+  var btn = document.getElementById('refreshBtn');
   btn.textContent='Refreshing...'; btn.disabled=true;
   try{ await fetchESPN(); } catch(_){}
   updateStatusBar();
   btn.textContent='Refresh'; btn.disabled=false;
-  var active=document.querySelector('.nav-btn.active');
-  if(active){
-    var tab=active.getAttribute('data-tab');
-    if(tab) showTab(tab);
-  }
+  var active = document.querySelector('.nav-btn.active');
+  if(active){ var tab=active.getAttribute('data-tab'); if(tab) showTab(tab); }
 }
 async function init(){
   applyPanic();
@@ -1266,9 +1216,9 @@ async function init(){
   try{ fetchESPN(); } catch(_){}
   setInterval(async function(){
     try{ await fetchESPN(); } catch(_){}
-    var active=document.querySelector('.nav-btn.active');
+    var active = document.querySelector('.nav-btn.active');
     if(active){
-      var tab=active.getAttribute('data-tab');
+      var tab = active.getAttribute('data-tab');
       if(tab==='standings') renderStandings();
       if(tab==='leaderboard') renderLeaderboard();
     }
